@@ -59,6 +59,8 @@
     "nav.features": "פיצ'רים",
     "nav.browser": "FishBrowser",
     "nav.faq": "שאלות",
+    "nav.changelog": "מה חדש",
+    "foot.changelog": "מה חדש",
     "nav.releases": "גרסאות",
     "nav.download": "הורדה",
     "hero.eyebrow": "חינם · Windows 10 / 11 · בלי הרשאות מנהל",
