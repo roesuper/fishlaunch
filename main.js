@@ -6,6 +6,18 @@
   const fmt = (n) => (n >= 1000 ? (n / 1000).toFixed(1) + "k" : String(n));
   $("year").textContent = String(new Date().getFullYear());
 
+  // ---- Discord (site/links.json, written by discord\setup.ps1; hidden until it exists) ----
+  fetch("links.json?t=" + Math.floor(Date.now() / 300000))
+    .then((r) => (r.ok ? r.json() : {}))
+    .then((l) => {
+      if (!l.discord) return;
+      document.querySelectorAll("[data-discord]").forEach((el) => {
+        if (el.tagName === "A" && el.getAttribute("href") === "#") el.href = l.discord;
+        el.hidden = false;
+      });
+    })
+    .catch(() => {});
+
   // ---- releases ----
   async function release(repo) {
     const r = await fetch(`https://api.github.com/repos/${repo}/releases/latest`, { headers: { Accept: "application/vnd.github+json" } });
@@ -92,6 +104,10 @@
     "b.eyebrow": "אפליקציה נלווית",
     "b.p": "דפדפן מהיר וכהה לגיימרים: חוסם פרסומות אמיתי (הרשימות של EasyList, EasyPrivacy ו-uBlock — כולל פרסומות ביוטיוב), כל סרטון מתחיל באיכות הכי גבוהה עד 4K, כפתור ה-Play של Roblox נפתח ישר ב-FishLaunch, מסך מלא אמיתי, ואותו מראה כמו הלאנצ'ר.",
     "b.download": "הורד את FishBrowser",
+    "c.eyebrow": "קהילה",
+    "c.h2": "הצטרפו לדיסקורד",
+    "c.p": "עזרה כשמשהו נשבר, מקום לדווח על באגים ולהצביע על רעיונות, ופינג ברגע שגרסה חדשה יוצאת. פישי שם.",
+    "c.join": "הצטרפו לשרת",
     "faq.h2": "שאלות",
     "q1": "Windows אומר \"unknown publisher\" — זה נורמלי?",
     "a1": "כן. תעודת חתימה של Microsoft עולה כמה מאות דולרים בשנה, ואפליקציה חינמית מדלגת על זה. לוחצים More info ← Run anyway. ההורדה עצמה מגיעה מ-GitHub, וכל עדכון חתום עם המפתח של FishLaunch לפני שהעותק שלך מקבל אותו.",

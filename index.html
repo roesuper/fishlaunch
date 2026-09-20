@@ -22,6 +22,7 @@
         <a href="#faq" data-i18n="nav.faq">FAQ</a>
         <a href="changelog.html" data-i18n="nav.changelog">Changelog</a>
         <a href="https://github.com/roesuper/fishlaunch/releases" target="_blank" rel="noopener" data-i18n="nav.releases">Releases</a>
+        <a href="#community" data-discord hidden>Discord</a>
       </nav>
       <div class="nav-right">
         <button class="lang" id="lang" title="עברית / English">עב</button>
@@ -116,6 +117,22 @@
         </div>
       </section>
 
+      <section class="community" id="community" data-discord hidden>
+        <div class="community-card">
+          <div class="c-icon">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor"><path d="M19.6 5.6A16 16 0 0 0 15.7 4.4l-.5 1a15 15 0 0 0-6.4 0l-.5-1a16 16 0 0 0-3.9 1.2C1.9 9.3 1.2 13 1.5 16.6a16 16 0 0 0 4.8 2.4l1-1.6a10 10 0 0 1-1.6-.8l.4-.3a11.5 11.5 0 0 0 11.8 0l.4.3-1.6.8 1 1.6a16 16 0 0 0 4.8-2.4c.4-4.2-.7-7.8-2.9-11ZM8.7 14.4c-.9 0-1.7-.9-1.7-2s.8-2 1.7-2 1.8.9 1.7 2c0 1.1-.7 2-1.7 2Zm6.6 0c-.9 0-1.7-.9-1.7-2s.8-2 1.7-2 1.8.9 1.7 2c0 1.1-.7 2-1.7 2Z"/></svg>
+          </div>
+          <div class="c-text">
+            <div class="eyebrow"><i></i><span data-i18n="c.eyebrow">Community</span></div>
+            <h2 data-i18n="c.h2">Join the Discord</h2>
+            <p data-i18n="c.p">Help when something breaks, a place to report bugs and vote on ideas, and a ping the moment a new version is out. Fishy is there.</p>
+            <div class="cta">
+              <a class="btn" data-discord href="#" target="_blank" rel="noopener" data-i18n="c.join">Join the server</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="faq" id="faq">
         <h2 data-i18n="faq.h2">Questions</h2>
         <details open>
@@ -143,7 +160,7 @@
 
     <footer>
       <span>© <span id="year"></span> Fishy · FishLaunch & FishBrowser</span>
-      <span><a href="changelog.html" data-i18n="foot.changelog">Changelog</a> · <a href="https://github.com/roesuper/fishlaunch" target="_blank" rel="noopener">GitHub</a> · <a href="https://github.com/roesuper/fishlaunch/releases" target="_blank" rel="noopener" data-i18n="foot.rel">All releases</a></span>
+      <span><a href="changelog.html" data-i18n="foot.changelog">Changelog</a> · <a data-discord hidden href="#" target="_blank" rel="noopener">Discord</a> <span data-discord hidden>·</span> <a href="https://github.com/roesuper/fishlaunch" target="_blank" rel="noopener">GitHub</a> · <a href="https://github.com/roesuper/fishlaunch/releases" target="_blank" rel="noopener" data-i18n="foot.rel">All releases</a></span>
     </footer>
 
     <script src="main.js"></script>
