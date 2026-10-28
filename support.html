@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Support — FishyTweaks</title>
+    <meta name="description" content="Get help with FishyTweaks: install warnings, Game Mode, undoing changes and reporting bugs." />
+    <meta name="theme-color" content="#08090c" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Heebo:wght@400;500;600&display=swap" />
+    <link rel="stylesheet" href="style.css" />
+    <script>
+      (function () {
+        var l;
+        try { l = localStorage.getItem("ft-lang") || localStorage.getItem("fl-lang"); } catch (e) {}
+        if (!l) l = (navigator.language || "").slice(0, 2) === "he" ? "he" : "en";
+        document.documentElement.lang = l;
+        document.documentElement.dir = l === "he" ? "rtl" : "ltr";
+      })();
+    </script>
+  </head>
+  <body data-page="support">
+    <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+    <header class="nav" id="nav">
+      <div class="wrap">
+        <a class="brand" href="./" aria-label="FishyTweaks home">
+          <span class="mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill-rule="evenodd" d="M2.5 16C7 8.2 15.6 7.6 21.2 16 15.6 24.4 7 23.8 2.5 16Zm7.4-3.4a1.9 1.9 0 1 0 0 3.8 1.9 1.9 0 0 0 0-3.8Z"/><path d="M22.6 16 29.6 9.4 27.4 16l2.2 6.6Z"/></svg></span>
+          <span class="brand-name">Fishy<span>Tweaks</span></span>
+        </a>
+        <nav class="nav-links" aria-label="Main">
+          <a href="./#features" data-i18n="nav.features">Features</a>
+          <a href="./#how" data-i18n="nav.how">How it works</a>
+          <a href="changelog.html" data-i18n="nav.changelog">Changelog</a>
+          <a href="./#faq" data-i18n="nav.faq">FAQ</a>
+        </nav>
+        <div class="nav-end">
+          <button class="lang" id="lang" type="button" aria-label="עברית"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3Z"/></svg><span class="lang-long">עברית</span></button>
+          <a class="btn btn-primary btn-sm nav-dl" href="https://github.com/roesuper/fishlaunch/releases/latest" data-dl data-i18n="nav.download">Download for Windows</a>
+          <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="sheet" aria-label="Menu" data-i18n-attr="aria-label:nav.menu"><span><i></i><i></i></span></button>
+        </div>
+      </div>
+    </header>
+    <div class="sheet" id="sheet">
+      <a href="./#features" data-i18n="nav.features">Features</a>
+      <a href="./#how" data-i18n="nav.how">How it works</a>
+      <a href="changelog.html" data-i18n="nav.changelog">Changelog</a>
+      <a href="./#faq" data-i18n="nav.faq">FAQ</a>
+      <a class="btn btn-primary" href="https://github.com/roesuper/fishlaunch/releases/latest" data-dl data-i18n="nav.download">Download for Windows</a>
+    </div>
+
+    <main id="main" class="page">
+      <div class="wrap">
+        <div class="page-head">
+          <h1 data-i18n="sp.h">Support</h1>
+          <p class="lead" data-i18n="sp.p">Most questions are answered below. For anything else, the Discord is where Fishy answers.</p>
+        </div>
+        <div class="support-grid">
+          <div class="support-card">
+            <h2 data-i18n="sp.c1">Ask on Discord</h2>
+            <p data-i18n="sp.c1p">Report a bug, get help with a setting, or vote on what comes next. New versions are announced there too.</p>
+            <a class="link" href="https://discord.gg/gJp49hprJb" target="_blank" rel="noopener" data-discord data-i18n="sp.c1l">Join the server</a>
+          </div>
+          <div class="support-card">
+            <h2 data-i18n="sp.c2">Read the FAQ</h2>
+            <p data-i18n="sp.c2p">Install warnings, bans, FPS expectations and how updates work.</p>
+            <a class="link" href="./#faq" data-i18n="sp.c2l">Open the FAQ</a>
+          </div>
+          <div class="support-card">
+            <h2 data-i18n="sp.c3">See what changed</h2>
+            <p data-i18n="sp.c3p">If something started after an update, the changelog lists what each version changed.</p>
+            <a class="link" href="changelog.html" data-i18n="sp.c3l">Open the changelog</a>
+          </div>
+        </div>
+        <div class="prose" data-i18n="sp.body">
+          <h2>The installer is blocked</h2>
+          <p>FishyTweaks doesn't have a paid Microsoft certificate yet. On the blue SmartScreen window, click <b>More info → Run anyway</b>. If Windows 11's Smart App Control blocks it with no Run anyway button, it can only be turned off in <b>Windows Security → App &amp; browser control → Smart App Control</b>, and Windows only lets you turn it back on with a clean reinstall.</p>
+
+          <h2>Game Mode didn't turn on</h2>
+          <p>Open <b>Game Mode</b> in the app and check that <b>Start with Fortnite</b> is on. The FPS meter needs a one-time setup that Windows asks admin approval for; until then, Game Mode still works but can't show FPS.</p>
+
+          <h2>Undo a change</h2>
+          <ul>
+            <li><b>One Smart Tune tweak:</b> Smart Tune → History.</li>
+            <li><b>PC Tweaks:</b> PC Tweaks → Revert everything.</li>
+            <li><b>Fortnite settings:</b> Fortnite → Restore original config.</li>
+            <li><b>Everything:</b> Settings → Undo everything. It also lists what it put back.</li>
+          </ul>
+          <p>Smart Tune also makes a Windows restore point before each run, which you can use from Windows' System Restore if the app won't open.</p>
+
+          <h2>Uninstall</h2>
+          <p>Run <b>Undo everything</b> first, then remove FishyTweaks from <b>Windows Settings → Apps → Installed apps</b>.</p>
+
+          <h2>Reporting a bug</h2>
+          <p>Post on Discord with your app version (shown under the logo in the app), what you did, and what happened instead. A screenshot helps.</p>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap">
+        <div class="footer-bottom" style="margin-top: 0; border-top: 0; padding-top: 0">
+          <span>© <span id="year">2026</span> Fishy</span>
+          <span><a href="privacy.html" data-i18n="foot.privacy">Privacy</a> &nbsp; <a href="changelog.html" data-i18n="nav.changelog">Changelog</a> &nbsp; <a href="https://github.com/roesuper/fishlaunch/releases" target="_blank" rel="noopener" data-i18n="foot.releases">All releases</a></span>
+        </div>
+      </div>
+    </footer>
+    <script src="main.js"></script>
+  </body>
+</html>

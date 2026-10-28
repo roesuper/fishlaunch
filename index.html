@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FishLaunch — Roblox & Fortnite launcher</title>
-    <meta name="description" content="FishLaunch: the free Roblox & Fortnite launcher by Fishy. Graphics presets, native FPS cap, ping hunter, PC tweaks, crosshair, auto-updates." />
-    <meta property="og:title" content="FishLaunch — Roblox & Fortnite launcher" />
-    <meta property="og:description" content="Free launcher for Roblox & Fortnite. Presets, FPS cap, ping hunter, tweaks. Windows 10/11." />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FishyTweaks — Windows tuning for Fortnite you can undo</title>
+    <meta name="description" content="FishyTweaks prepares Windows for Fortnite, shows what limits your FPS and puts every change back when you ask. Free for Windows 10 and 11." />
+    <meta property="og:title" content="FishyTweaks — Windows tuning for Fortnite you can undo" />
+    <meta property="og:description" content="Game Mode, Smart Tune and FPS Doctor in one free app. Every change is recorded and reversible." />
     <meta property="og:image" content="https://fishlaunch.pages.dev/og.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -14,229 +14,391 @@
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="https://fishlaunch.pages.dev/og.png" />
-    <meta name="theme-color" content="#070b12" />
-    <link rel="icon" href="favicon.png" />
+    <meta name="theme-color" content="#08090c" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Heebo:wght@400;500;600&display=swap" />
+    <link rel="preload" as="image" href="assets/screens/dashboard.webp" imagesrcset="assets/screens/dashboard.webp 1440w, assets/screens/dashboard@2x.webp 2880w" imagesizes="(min-width: 1360px) 1200px, 94vw" />
     <link rel="stylesheet" href="style.css" />
+    <script>
+      // pick the language before first paint so Hebrew visitors never see an English flash
+      (function () {
+        var l;
+        try { l = localStorage.getItem("ft-lang") || localStorage.getItem("fl-lang"); } catch (e) {}
+        if (!l) l = (navigator.language || "").slice(0, 2) === "he" ? "he" : "en";
+        document.documentElement.lang = l;
+        document.documentElement.dir = l === "he" ? "rtl" : "ltr";
+      })();
+    </script>
   </head>
-  <body>
-    <div class="aurora"><i class="a1"></i><i class="a2"></i><i class="a3"></i></div>
+  <body data-page="home">
+    <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
 
-    <header class="nav">
-      <a class="brand" href="#top"><img src="logo.png" alt="" /><span>FishLaunch</span></a>
-      <nav>
-        <a href="#features" data-i18n="nav.features">Features</a>
-        <a href="#browser" data-i18n="nav.browser">FishBrowser</a>
-        <a href="#faq" data-i18n="nav.faq">FAQ</a>
-        <a href="changelog.html" data-i18n="nav.changelog">Changelog</a>
-        <a href="https://github.com/roesuper/fishlaunch/releases" target="_blank" rel="noopener" data-i18n="nav.releases">Releases</a>
-        <a href="#community" data-discord hidden>Discord</a>
-      </nav>
-      <div class="nav-right">
-        <button class="lang" id="lang" title="עברית / English">עב</button>
-        <a class="btn sm" href="#download" data-i18n="nav.download">Download</a>
+    <header class="nav" id="nav">
+      <div class="wrap">
+        <a class="brand" href="./" aria-label="FishyTweaks home">
+          <span class="mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill-rule="evenodd" d="M2.5 16C7 8.2 15.6 7.6 21.2 16 15.6 24.4 7 23.8 2.5 16Zm7.4-3.4a1.9 1.9 0 1 0 0 3.8 1.9 1.9 0 0 0 0-3.8Z"/><path d="M22.6 16 29.6 9.4 27.4 16l2.2 6.6Z"/></svg></span>
+          <span class="brand-name">Fishy<span>Tweaks</span></span>
+        </a>
+        <nav class="nav-links" aria-label="Main">
+          <a href="#features" data-i18n="nav.features">Features</a>
+          <a href="#how" data-i18n="nav.how">How it works</a>
+          <a href="changelog.html" data-i18n="nav.changelog">Changelog</a>
+          <a href="#faq" data-i18n="nav.faq">FAQ</a>
+        </nav>
+        <div class="nav-end">
+          <button class="lang" id="lang" type="button" aria-label="עברית"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3Z"/></svg><span class="lang-long">עברית</span></button>
+          <a class="btn btn-primary btn-sm nav-dl" href="https://github.com/roesuper/fishlaunch/releases/latest" data-dl data-i18n="nav.download">Download for Windows</a>
+          <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="sheet" aria-label="Menu" data-i18n-attr="aria-label:nav.menu"><span><i></i><i></i></span></button>
+        </div>
       </div>
     </header>
+    <div class="sheet" id="sheet">
+      <a href="#features" data-i18n="nav.features">Features</a>
+      <a href="#how" data-i18n="nav.how">How it works</a>
+      <a href="changelog.html" data-i18n="nav.changelog">Changelog</a>
+      <a href="#faq" data-i18n="nav.faq">FAQ</a>
+      <a class="btn btn-primary" href="https://github.com/roesuper/fishlaunch/releases/latest" data-dl data-i18n="nav.download">Download for Windows</a>
+    </div>
 
-    <main id="top">
-      <section class="hero">
-        <div class="hero-text">
-          <div class="eyebrow"><i></i><span data-i18n="hero.eyebrow">Free · Windows 10 / 11 · no admin needed</span></div>
-          <h1><span class="grad">FishLaunch</span><br /><span data-i18n="hero.h1">The launcher your FPS deserves.</span></h1>
-          <p data-i18n="hero.p">One click starts Roblox or Fortnite with your graphics preset, a real FPS cap, the lowest-ping region and your PC tuned — then it keeps itself up to date.</p>
-          <div class="cta" id="download">
-            <a class="btn big" id="dl" href="https://github.com/roesuper/fishlaunch/releases/latest">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 19h16" /></svg>
-              <span data-i18n="hero.download">Download for Windows</span>
+    <main id="main">
+      <!-- hero -->
+      <section class="hero" id="top">
+        <div class="wrap">
+          <div class="hero-head">
+            <h1>
+              <span class="line" data-i18n="hero.l1">Your performance.</span>
+              <span class="line" data-i18n="hero.l2">Under your control.</span>
+            </h1>
+            <div class="hero-side">
+              <p class="lead" data-i18n="hero.sub">FishyTweaks gets Windows ready for Fortnite, shows you what limits your FPS, and puts every change back when you ask. One app, nothing hidden.</p>
+              <div class="hero-actions">
+                <a class="btn btn-primary" href="https://github.com/roesuper/fishlaunch/releases/latest" data-dl>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M0 2.3 6.5 1.4v6.2H0zm7.3-1L16 0v7.6H7.3zM0 8.4h6.5v6.2L0 13.7zm7.3 0H16V16l-8.7-1.2z"/></svg>
+                  <span data-i18n="cta.download">Download for Windows</span>
+                </a>
+                <a class="link" href="#features"><span data-i18n="hero.explore">Explore features</span><svg class="arrow" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+              </div>
+              <ul class="facts">
+                <li data-i18n="facts.free">Free</li>
+                <li data-i18n="facts.win">Windows 10 and 11, 64-bit</li>
+                <li class="ltr" data-release hidden><span data-ver></span>&nbsp;·&nbsp;<span data-size></span></li>
+              </ul>
+            </div>
+          </div>
+          <figure class="hero-shot">
+            <div class="window" data-focus="17,7,49,53">
+              <img data-shot="dashboard" src="assets/screens/dashboard.webp" srcset="assets/screens/dashboard.webp 1440w, assets/screens/dashboard@2x.webp 2880w" sizes="(min-width: 1360px) 1200px, 94vw" width="1440" height="900" alt="The FishyTweaks dashboard: Fortnite setup, Game Mode launch button, the last session's FPS and this PC's status." data-i18n-attr="alt:alt.dashboard" fetchpriority="high" />
+            </div>
+            <figcaption class="shot-note" data-i18n="shot.note" data-tap="Tap a screenshot to see it full size." data-i18n-attr="data-tap:shot.tap">FishyTweaks 0.9 interface. Numbers in the screenshots are sample data.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- features -->
+      <section class="section" id="features">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <h2 class="h2" data-i18n="f.h2">Everything happens around one Fortnite session.</h2>
+            <p class="lead" data-i18n="f.sub">Prepare the PC before the match, measure what happens during it, and put Windows back the way it was after. Each tool shows exactly what it does.</p>
+          </div>
+
+          <!-- Game Mode -->
+          <article class="feat feat-wide" data-feat>
+            <div class="feat-top reveal">
+              <div class="feat-copy">
+                <p class="kicker" data-i18n="gm.k">Game Mode</p>
+                <h3 class="h3" data-i18n="gm.h">Windows steps aside while you play. Then steps back.</h3>
+                <p class="lead" data-i18n="gm.p">Game Mode turns on when Fortnite starts (you can switch that off), applies a short list of temporary changes, and undoes all of them the moment the game closes — even after a crash.</p>
+              </div>
+              <ul class="points">
+                <li><button class="point" type="button" data-spot="21,26.4,45,20.8"><b data-i18n="gm.p1">Live session</b><span data-i18n="gm.p1d">Current FPS, session length and how many background apps were lowered.</span></button></li>
+                <li><button class="point" type="button" data-spot="20.75,55.6,44.75,29.4"><b data-i18n="gm.p2">Frame timing</b><span data-i18n="gm.p2d">1% lows, slowest frames, CPU and RAM, plus the last two minutes of FPS.</span></button></li>
+                <li><button class="point" type="button" data-spot="68.5,20,29,10.4"><b data-i18n="gm.p3">Changes you can see</b><span data-i18n="gm.p3d">A running count of what's active right now, and a promise of when it goes back.</span></button></li>
+                <li><button class="point" type="button" data-spot="68.5,32.4,29,66"><b data-i18n="gm.p4">You pick the steps</b><span data-i18n="gm.p4d">Lower background apps, pause Wallpaper Engine, best power mode, 1 ms timer. Each is a switch.</span></button></li>
+              </ul>
+            </div>
+            <figure class="shot reveal" data-spot-host data-focus="20,24,47,62">
+              <img data-shot="gamemode" src="assets/screens/gamemode.webp" srcset="assets/screens/gamemode.webp 1440w, assets/screens/gamemode@2x.webp 2880w" sizes="(min-width: 1360px) 1200px, 94vw" width="1440" height="900" loading="lazy" alt="Game Mode during a Fortnite session: live FPS, frame timing graph and the list of temporary changes." data-i18n-attr="alt:alt.gamemode" />
+              <span class="spot" aria-hidden="true"></span>
+            </figure>
+          </article>
+
+          <!-- Smart Tune -->
+          <article class="feat feat-split" data-feat>
+            <div class="feat-copy reveal">
+              <p class="kicker" data-i18n="st.k">Smart Tune</p>
+              <h3 class="h3" data-i18n="st.h">A plan made for this PC, not a tweak pack.</h3>
+              <p class="lead" data-i18n="st.p">Smart Tune scans your hardware, asks four questions, and picks from a library of 1,145 documented tweaks. Things you rely on — a Bluetooth controller, Discord voice, OBS — stay on.</p>
+              <ul class="points">
+                <li><button class="point" type="button" data-spot="21.25,36.8,74.15,13.6"><b data-i18n="st.p1">See the plan first</b><span data-i18n="st.p1d">How many tweaks it picked, which ones affect input lag, and what it left out on purpose.</span></button></li>
+                <li><button class="point" type="button" data-spot="21.25,52,62,4"><b data-i18n="st.p2">Grouped by area</b><span data-i18n="st.p2d">Network, background apps, scheduled tasks, input and more.</span></button></li>
+                <li><button class="point" type="button" data-spot="21.25,57.2,73.5,10.2"><b data-i18n="st.p3">Safe by default</b><span data-i18n="st.p3d">A restore point first, one admin prompt, and every change can be undone from History.</span></button></li>
+              </ul>
+            </div>
+            <figure class="shot crop reveal" data-spot-host data-crop="16.5" data-crop-h="80" data-focus="20,20,48,40">
+              <img data-shot="tune" src="assets/screens/tune.webp" srcset="assets/screens/tune.webp 1440w, assets/screens/tune@2x.webp 2880w" sizes="(min-width: 1360px) 940px, (min-width: 1081px) 64vw, 110vw" width="1440" height="900" loading="lazy" alt="Smart Tune's ready plan: 75 tweaks picked, grouped by category, with a restore point and undo." data-i18n-attr="alt:alt.tune" />
+              <span class="spot" aria-hidden="true"></span>
+            </figure>
+          </article>
+
+          <!-- FPS Doctor -->
+          <article class="feat feat-split rev" data-feat>
+            <div class="feat-copy reveal">
+              <p class="kicker" data-i18n="fd.k">FPS Doctor</p>
+              <h3 class="h3" data-i18n="fd.h">Find out what is actually holding your FPS back.</h3>
+              <p class="lead" data-i18n="fd.p">FPS Doctor checks RAM channels, CPU boost, caps, V-Sync and drivers. With Fortnite running it measures whether the CPU or the graphics card is the limit — then tells you which fixes software can do and which need hardware.</p>
+              <ul class="points">
+                <li><button class="point" type="button" data-spot="20,18.4,77.5,23.6"><b data-i18n="fd.p1">A health score with context</b><span data-i18n="fd.p1d">Your CPU, GPU and memory setup, and the fixes it can apply for you.</span></button></li>
+                <li><button class="point" type="button" data-spot="19.25,43.8,78.25,27"><b data-i18n="fd.p2">The real bottleneck</b><span data-i18n="fd.p2d">Live FPS, GPU load and CPU clock, explained in one sentence.</span></button></li>
+                <li><button class="point" type="button" data-spot="19.25,72.6,78.25,27"><b data-i18n="fd.p3">Findings, ranked</b><span data-i18n="fd.p3d">Each one says who fixes it: FishyTweaks, you, or a hardware upgrade.</span></button></li>
+              </ul>
+            </div>
+            <figure class="shot crop reveal" data-spot-host data-crop="16.5" data-focus="19,17,52,26">
+              <img data-shot="doctor" src="assets/screens/doctor.webp" srcset="assets/screens/doctor.webp 1440w, assets/screens/doctor@2x.webp 2880w" sizes="(min-width: 1360px) 940px, (min-width: 1081px) 64vw, 110vw" width="1440" height="900" loading="lazy" alt="FPS Doctor results: health score, a live CPU-limited reading and ranked findings." data-i18n-attr="alt:alt.doctor" />
+              <span class="spot" aria-hidden="true"></span>
+            </figure>
+          </article>
+
+          <!-- Performance + Fortnite -->
+          <article class="feat tabs-block" data-tabs>
+            <div class="feat-copy reveal">
+              <div class="tablist" role="tablist" aria-label="More tools" data-i18n-attr="aria-label:tabs.label">
+                <button class="tab" role="tab" id="tab-perf" aria-controls="panel-perf" aria-selected="true" type="button" data-i18n="pf.k">Performance</button>
+                <button class="tab" role="tab" id="tab-fn" aria-controls="panel-fn" aria-selected="false" tabindex="-1" type="button" data-i18n="fn.k">Fortnite settings</button>
+              </div>
+              <div class="tabpanel" role="tabpanel" id="panel-perf" aria-labelledby="tab-perf">
+                <h3 class="h3" data-i18n="pf.h">Every session, with the FPS it really measured.</h3>
+                <p class="lead" data-i18n="pf.p">Game Mode logs each match: length, average FPS and 1% lows. Trends only compare sessions that used the same Fortnite settings, so a change of preset can't fake an improvement.</p>
+                <ul class="ticks">
+                  <li data-i18n="pf.t1">Average FPS and 1% lows per session</li>
+                  <li data-i18n="pf.t2">30-second benchmark for before/after checks</li>
+                  <li data-i18n="pf.t3">Power plan duel that keeps the faster plan</li>
+                </ul>
+              </div>
+              <div class="tabpanel" role="tabpanel" id="panel-fn" aria-labelledby="tab-fn" hidden>
+                <h3 class="h3" data-i18n="fn.h">Fortnite presets that check your PC first.</h3>
+                <p class="lead" data-i18n="fn.p">Pick a preset, a resolution and an FPS cap; FishyTweaks writes Fortnite's own settings file and keeps a copy of yours. Presets that could break the game on your hardware are switched off before you can choose them.</p>
+                <ul class="ticks">
+                  <li data-i18n="fn.t1">Balanced, Potato Pixel, Stretched and more</li>
+                  <li data-i18n="fn.t2">Resolution follows your monitor</li>
+                  <li data-i18n="fn.t3">Restore your original settings any time</li>
+                </ul>
+              </div>
+            </div>
+            <div class="tab-shots reveal">
+              <figure class="shot crop" data-for="panel-perf" data-crop="16.5" data-focus="19,18,52,48">
+                <img data-shot="performance" src="assets/screens/performance.webp" srcset="assets/screens/performance.webp 1440w, assets/screens/performance@2x.webp 2880w" sizes="(min-width: 1360px) 940px, (min-width: 1081px) 64vw, 110vw" width="1440" height="900" loading="lazy" alt="Performance history: sessions, time played and an average FPS graph per session." data-i18n-attr="alt:alt.performance" />
+              </figure>
+              <figure class="shot crop" data-for="panel-fn" data-crop="16.5" data-off data-focus="18.5,17,54,57">
+                <img data-shot="fortnite" src="assets/screens/fortnite.webp" srcset="assets/screens/fortnite.webp 1440w, assets/screens/fortnite@2x.webp 2880w" sizes="(min-width: 1360px) 940px, (min-width: 1081px) 64vw, 110vw" width="1440" height="900" loading="lazy" alt="Fortnite settings: preset cards with resolution and render mode, and an apply-and-launch button." data-i18n-attr="alt:alt.fortnite" />
+              </figure>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- how it works -->
+      <section class="section" id="how">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <h2 class="h2" data-i18n="how.h2">Three steps from download to match.</h2>
+            <p class="lead" data-i18n="how.sub">No online account: your profile stays on this PC. Results depend on your hardware, so FishyTweaks measures instead of promising numbers.</p>
+          </div>
+          <ol class="steps reveal">
+            <li class="step">
+              <span class="step-n">01</span>
+              <h3 data-i18n="how.s1">Download and install</h3>
+              <p data-i18n="how.s1p">Get the installer from GitHub. It installs for your Windows user only and updates itself later — each update is signature-checked before it's installed.</p>
+              <p class="note" data-i18n="how.s1n"><b>No admin</b> needed to install.</p>
+            </li>
+            <li class="step">
+              <span class="step-n">02</span>
+              <h3 data-i18n="how.s2">Analyze and configure</h3>
+              <p data-i18n="how.s2p">Run FPS Doctor to see what limits your PC, let Smart Tune build a plan, and pick your Fortnite preset. Nothing changes until you press Apply.</p>
+              <p class="note" data-i18n="how.s2n"><b>Admin once</b> for system-wide changes: machine-level registry values, services, the custom power plan, DNS and the FPS meter.</p>
+            </li>
+            <li class="step">
+              <span class="step-n">03</span>
+              <h3 data-i18n="how.s3">Apply and launch Fortnite</h3>
+              <p data-i18n="how.s3p">Press Play with Game Mode, or just start Fortnite the usual way — Game Mode notices and turns on by itself. When you close the game, everything temporary goes back.</p>
+              <p class="note" data-i18n="how.s3n"><b>Measured, not promised:</b> check the result in Performance.</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- trust -->
+      <section class="section" id="trust">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <h2 class="h2" data-i18n="tr.h2">What it changes, and how you get it back.</h2>
+            <p class="lead" data-i18n="tr.sub">FishyTweaks records the previous value before it writes anything. This is the full list of what it touches.</p>
+          </div>
+          <div class="ledger reveal">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col" data-i18n="tr.c1">Area</th>
+                  <th scope="col" data-i18n="tr.c2">What changes</th>
+                  <th scope="col" data-i18n="tr.c3">Permission</th>
+                  <th scope="col" data-i18n="tr.c4">How it's undone</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row"><span data-i18n="tr.r1">Smart Tune &amp; PC Tweaks</span><small data-i18n="tr.r1s">Permanent until you undo</small></th>
+                  <td data-label="What changes" data-i18n-attr="data-label:tr.c2" data-i18n="tr.r1a">Registry values, service start types, scheduled tasks, startup entries and power-plan settings — only the ones you approved.</td>
+                  <td data-label="Permission" data-i18n-attr="data-label:tr.c3"><span class="tag user" data-i18n="tag.user">Your user</span> <span class="tag admin" data-i18n="tag.admin1">Admin, once per run</span></td>
+                  <td data-label="How it's undone" data-i18n-attr="data-label:tr.c4" data-i18n="tr.r1c">The exact previous value is saved first, including values that didn't exist. Undo one tweak or all of them from History. A system restore point is made before each run.</td>
+                </tr>
+                <tr>
+                  <th scope="row"><span data-i18n="tr.r2">Game Mode</span><small data-i18n="tr.r2s">Temporary, one session</small></th>
+                  <td data-i18n-attr="data-label:tr.c2" data-label="What changes" data-i18n="tr.r2a">Background-app priority, Windows power mode, the 1 ms system timer, and standby memory when free RAM is low.</td>
+                  <td data-i18n-attr="data-label:tr.c3" data-label="Permission"><span class="tag user" data-i18n="tag.user">Your user</span> <span class="tag admin" data-i18n="tag.admin2">Admin to free memory</span></td>
+                  <td data-i18n-attr="data-label:tr.c4" data-label="How it's undone" data-i18n="tr.r2c">Written to a recovery file before it happens and put back when Fortnite closes. If the PC or the app crashes, it's put back on the next start.</td>
+                </tr>
+                <tr>
+                  <th scope="row"><span data-i18n="tr.r3">Fortnite settings</span><small data-i18n="tr.r3s">Your choice of preset</small></th>
+                  <td data-i18n-attr="data-label:tr.c2" data-label="What changes" data-i18n="tr.r3a">Fortnite's own settings file: quality levels, resolution, render mode and FPS cap.</td>
+                  <td data-i18n-attr="data-label:tr.c3" data-label="Permission"><span class="tag user" data-i18n="tag.user">Your user</span></td>
+                  <td data-i18n-attr="data-label:tr.c4" data-label="How it's undone" data-i18n="tr.r3c">Your settings are saved before the first change. One click restores them.</td>
+                </tr>
+                <tr>
+                  <th scope="row"><span data-i18n="tr.r4">Everything at once</span><small data-i18n="tr.r4s">Undo everything</small></th>
+                  <td data-i18n-attr="data-label:tr.c2" data-label="What changes" data-i18n="tr.r4a">Tweaks, the NVIDIA driver profile, the custom power plan and Fortnite settings.</td>
+                  <td data-i18n-attr="data-label:tr.c3" data-label="Permission"><span class="tag admin" data-i18n="tag.admin1">Admin, once per run</span></td>
+                  <td data-i18n-attr="data-label:tr.c4" data-label="How it's undone" data-i18n="tr.r4c">One button puts the PC back the way it was before FishyTweaks and lists every step it took.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="facts-grid">
+            <div class="fact reveal">
+              <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg><span data-i18n="tr.f1">Never touches the game</span></h3>
+              <p data-i18n="tr.f1p">Fortnite is found by its process name only. FishyTweaks never opens, reads or writes the game process, so there's nothing for Easy Anti-Cheat to see. It also never disables Windows security.</p>
+            </div>
+            <div class="fact reveal" style="--d: 80ms">
+              <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 19h16"/></svg><span data-i18n="tr.f2">Where downloads come from</span></h3>
+              <p data-i18n="tr.f2p">Installers are published on GitHub Releases. Updates are signed, and the app checks the signature with a key built into it before installing.</p>
+              <p data-i18n="tr.f2p2">There's no paid Microsoft certificate yet, so Windows may show "unknown publisher" the first time.</p>
+            </div>
+            <div class="fact reveal" style="--d: 160ms">
+              <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span data-i18n="tr.f3">Privacy</span></h3>
+              <p data-i18n="tr.f3p">Profiles live only on your PC. No ads, no tracking. The app sends one anonymous count per day so we know how many people use it, and checks GitHub for updates.</p>
+              <p><a class="link" href="privacy.html" data-i18n="tr.f3l">Read the privacy policy</a></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- faq -->
+      <section class="section" id="faq">
+        <div class="wrap faq-grid">
+          <div class="reveal">
+            <h2 class="h2" data-i18n="faq.h2">Questions</h2>
+            <p class="lead" data-i18n="faq.sub" style="margin-top: 16px">Something else? Ask on <a class="link" href="support.html">the support page</a>.</p>
+          </div>
+          <div class="faq-list reveal">
+            <details>
+              <summary data-i18n="q1">Windows says "unknown publisher". Is that normal?</summary>
+              <div class="ans" data-i18n="a1">Yes. A Microsoft code-signing certificate costs a few hundred dollars a year, which this free app doesn't have yet. Click <b>More info → Run anyway</b>. The installer comes straight from GitHub, and every update is checked against FishyTweaks' own signing key before your copy accepts it.</div>
+            </details>
+            <details>
+              <summary data-i18n="q2">Smart App Control blocked it and there's no "Run anyway".</summary>
+              <div class="ans" data-i18n="a2">Smart App Control on Windows 11 only allows apps with a paid publisher certificate, and it can't be bypassed for one app. You can turn it off in <b>Windows Security → App &amp; browser control → Smart App Control</b>. Windows only lets you turn it back on with a clean reinstall, so decide carefully.</div>
+            </details>
+            <details>
+              <summary data-i18n="q3">Can it get me banned?</summary>
+              <div class="ans" data-i18n="a3">FishyTweaks never opens, reads or writes the Fortnite process and doesn't inject anything. It changes Windows settings and Fortnite's own settings file — the same file the in-game menu writes.</div>
+            </details>
+            <details>
+              <summary data-i18n="q4">How much FPS will I gain?</summary>
+              <div class="ans" data-i18n="a4">It depends on your PC, and nobody can honestly promise a number. What moves FPS most is usually hardware setup (RAM in dual channel, XMP on), Fortnite's settings, and nothing fighting the game for the CPU. FPS Doctor shows which of these applies to you, and Performance shows the measured result.</div>
+            </details>
+            <details>
+              <summary data-i18n="q5">How do I undo everything?</summary>
+              <div class="ans" data-i18n="a5">Open Settings in the app and press <b>Undo everything</b>. It reverts every tweak, the NVIDIA driver profile, the custom power plan and your Fortnite settings, then shows what it did. Smart Tune also makes a Windows restore point before each run.</div>
+            </details>
+            <details>
+              <summary data-i18n="q6">How do updates work?</summary>
+              <div class="ans" data-i18n="a6">When the app starts it checks GitHub for a newer release. If there is one, you'll see an update banner; the download is signature-checked, installed and the app restarts in a few seconds. Nothing else downloads in the background.</div>
+            </details>
+            <details>
+              <summary data-i18n="q7">I had FishLaunch. Is this the same app?</summary>
+              <div class="ans" data-i18n="a7">Yes. FishLaunch was renamed to FishyTweaks and now focuses on Fortnite. Your copy keeps updating itself from the same place.</div>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- final CTA -->
+      <section class="section final" id="download">
+        <div class="wrap reveal">
+          <div class="mark-lg" aria-hidden="true"><svg viewBox="0 0 32 32"><path fill-rule="evenodd" d="M2.5 16C7 8.2 15.6 7.6 21.2 16 15.6 24.4 7 23.8 2.5 16Zm7.4-3.4a1.9 1.9 0 1 0 0 3.8 1.9 1.9 0 0 0 0-3.8Z"/><path d="M22.6 16 29.6 9.4 27.4 16l2.2 6.6Z"/></svg></div>
+          <h2 class="h2" data-i18n="end.h">Tune it once. Undo it any time.</h2>
+          <p class="lead" data-i18n="end.p">Free for Windows 10 and 11. Installs in seconds and keeps itself up to date.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="https://github.com/roesuper/fishlaunch/releases/latest" data-dl>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M0 2.3 6.5 1.4v6.2H0zm7.3-1L16 0v7.6H7.3zM0 8.4h6.5v6.2L0 13.7zm7.3 0H16V16l-8.7-1.2z"/></svg>
+              <span data-i18n="cta.download">Download for Windows</span>
             </a>
-            <div class="meta">
-              <span id="ver">v—</span><span class="dot"></span><span id="size">— MB</span><span class="dot"></span><span id="dls" data-i18n-dyn="dls">— downloads</span>
-            </div>
+            <a class="btn btn-ghost" href="changelog.html" data-i18n="end.changelog">What's new</a>
           </div>
-          <div class="trust">
-            <span><b>0</b> <span data-i18n="hero.t1">bans</span> — <span data-i18n="hero.t1b">it never touches the game process</span></span>
-            <span><b data-i18n="hero.t2">Signed</b> <span data-i18n="hero.t2b">auto-updates from GitHub</span></span>
-          </div>
+          <ul class="facts">
+            <li class="ltr" data-release hidden><span data-ver></span>&nbsp;·&nbsp;<span data-size></span></li>
+            <li data-i18n="end.src">From GitHub Releases</li>
+            <li><a class="link" href="https://github.com/roesuper/fishlaunch/releases" target="_blank" rel="noopener" data-i18n="end.all">All releases</a></li>
+          </ul>
+          <p class="fine rename-note" data-rename hidden data-i18n="end.rename">This release was published before the rename, so the installer is still called FishLaunch.</p>
         </div>
-        <div class="hero-shot">
-          <div class="shot">
-            <img src="screenshot.png" alt="FishLaunch home screen" />
-          </div>
-          <div class="shot-glow"></div>
-        </div>
-      </section>
-
-      <section class="strip">
-        <div class="stat"><b id="s-installs">—</b><span data-i18n="strip.installs">installs</span></div>
-        <div class="stat"><b id="s-active">—</b><span data-i18n="strip.active">active today</span></div>
-        <div class="stat"><b id="s-launches">—</b><span data-i18n="strip.launches">games launched</span></div>
-        <div class="stat"><b id="s-ver">—</b><span data-i18n="strip.latest">latest version</span></div>
-      </section>
-
-      <section class="features" id="features">
-        <h2 data-i18n="f.h2">Everything a PvP player wants, nothing else.</h2>
-        <p class="sub" data-i18n="f.sub">Built by a Blox Fruits & Fortnite player who got tired of laggy launchers.</p>
-        <div class="grid">
-          <div class="card rise" style="--d: 0ms">
-            <div class="ic cyan">⚡</div>
-            <b data-i18n="f1.t">Native FPS cap</b>
-            <p data-i18n="f1.p">Set 120 / 240 / unlimited with Roblox's own signed setting — the only FPS lever that still works after the FFlag lockdown.</p>
-          </div>
-          <div class="card rise" style="--d: 60ms">
-            <div class="ic violet">🎛️</div>
-            <b data-i18n="f2.t">Graphics presets</b>
-            <p data-i18n="f2.p">Potato PvP, Contrast, Low and the new Pretty — every flag is on Roblox's allowlist and verified after it's written, so you know what the game actually got.</p>
-          </div>
-          <div class="card rise" style="--d: 120ms">
-            <div class="ic green">📡</div>
-            <b data-i18n="f3.t">Ping hunter</b>
-            <p data-i18n="f3.p">Measures every Roblox datacenter from your PC and steers you to the lowest ping — with auto-rehop when a server is bad.</p>
-          </div>
-          <div class="card rise" style="--d: 180ms">
-            <div class="ic amber">🧰</div>
-            <b data-i18n="f4.t">Launch boost</b>
-            <p data-i18n="f4.p">Roblox pinned to your performance cores and started at High priority, background hogs pushed into efficiency mode while you play, an NVIDIA driver profile in one click — without ever touching the game process.</p>
-          </div>
-          <div class="card rise" style="--d: 240ms">
-            <div class="ic red">🎯</div>
-            <b data-i18n="f5.t">Smart Tune · 1,145 tweaks</b>
-            <p data-i18n="f5.p">Scans your PC, asks what you play and what you care about, and builds a plan: what's good for you, what needs care, and what to skip — with a custom power plan and one-click undo of every value. Never touches Windows security.</p>
-          </div>
-          <div class="card rise" style="--d: 300ms">
-            <div class="ic sky">🔄</div>
-            <b data-i18n="f6.t">Updates itself</b>
-            <p data-i18n="f6.p">Install once. New versions are signed and arrive on their own — your friends always run the same build as you.</p>
-          </div>
-          <div class="card rise" style="--d: 360ms">
-            <span class="new" data-i18n="new">NEW</span>
-            <div class="ic green">🩺</div>
-            <b data-i18n="f7.t">FPS Doctor</b>
-            <p data-i18n="f7.p">Measures your game while you play: real FPS, how busy your graphics card is, and what actually limits you — the CPU, the graphics card or a cap — plus which background apps eat power. Also finds single-channel RAM, XMP off, slow slots and hidden caps, and fixes what software can.</p>
-          </div>
-          <div class="card rise" style="--d: 420ms">
-            <div class="ic amber">🌕</div>
-            <b data-i18n="f8.t">Blox Fruits full moon timer</b>
-            <p data-i18n="f8.p">Knows when your private server's full moon rises, warns you 5 minutes before, shows the countdown in-game and reopens a fresh server for the next one. Plus fruit dealer restock timers.</p>
-          </div>
-          <div class="card rise" style="--d: 480ms">
-            <div class="ic violet">🔤</div>
-            <b data-i18n="f9.t">Roblox fonts</b>
-            <p data-i18n="f9.p">Swap every font in Roblox — menus, chat, nametags — for Luckiest Guy, Press Start 2P, Bangers or any font on your PC. Hebrew and emoji keep working.</p>
-          </div>
-          <div class="card rise" style="--d: 540ms">
-            <div class="ic cyan">🔗</div>
-            <b data-i18n="f10.t">Setup codes</b>
-            <p data-i18n="f10.p">Your whole setup — preset, FPS cap, cursor, font, crosshair, colours — in one FISH- code. Post it; whoever pastes it gets your exact setup.</p>
-          </div>
-          <div class="card rise" style="--d: 600ms">
-            <div class="ic red">⚔️</div>
-            <b data-i18n="f11.t">Power plan duel</b>
-            <p data-i18n="f11.p">Switches between your power plans while you play, measures your real FPS on each and keeps the fastest. No guessing which plan is "best".</p>
-          </div>
-          <div class="card rise" style="--d: 660ms">
-            <div class="ic sky">🏆</div>
-            <b data-i18n="f12.t">Levels & achievements</b>
-            <p data-i18n="f12.p">XP for every hour you play, streaks, and 21 badges — Marathon, Night owl, Moon hunter, Duelist. Plus a crosshair that now works in Roblox too.</p>
-          </div>
-          <div class="card rise" style="--d: 720ms">
-            <span class="new" data-i18n="new">NEW</span>
-            <div class="ic violet">✨</div>
-            <b data-i18n="f13.t">Pretty preset</b>
-            <p data-i18n="f13.p">Roblox that looks good and stays fast: the sharpest textures, smooth edges, and its own NVIDIA profile with 16× anisotropic filtering. Input lag stays exactly the same.</p>
-          </div>
-          <div class="card rise" style="--d: 780ms">
-            <span class="new" data-i18n="new">NEW</span>
-            <div class="ic green">↩️</div>
-            <b data-i18n="f14.t">Undo everything</b>
-            <p data-i18n="f14.p">One button puts your PC back exactly how it was before FishLaunch — every tweak, driver profile, power plan and Fortnite setting — and tells you what it did.</p>
-          </div>
-          <div class="card rise" style="--d: 840ms">
-            <span class="new" data-i18n="new">NEW</span>
-            <div class="ic cyan">📸</div>
-            <b data-i18n="f15.t">Share your result</b>
-            <p data-i18n="f15.p">Turn your FPS Doctor result into a clean picture for TikTok or Discord in one click. Your score, your FPS and what limits it.</p>
-          </div>
-          <div class="card rise" style="--d: 900ms">
-            <span class="new" data-i18n="new">NEW</span>
-            <div class="ic amber">🎯</div>
-            <b data-i18n="f16.t">Fortnite presets that fit your PC</b>
-            <p data-i18n="f16.p">Balanced keeps builds looking normal, resolution follows your own monitor, and any preset that could break Fortnite on your PC is switched off before you can pick it.</p>
-          </div>
-          <div class="card rise" style="--d: 960ms">
-            <span class="new" data-i18n="new">NEW</span>
-            <div class="ic red">⏺️</div>
-            <b data-i18n="f17.t">Macros</b>
-            <p data-i18n="f17.p">Record your keys and clicks once, play them back with one key — once, 50 times or until you stop, at any speed. Real key presses, millisecond timing, a panic key, and nothing ever touches the game.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="browser" id="browser">
-        <div class="browser-card">
-          <img class="b-logo" src="browser-logo.png" alt="" />
-          <div class="b-text">
-            <div class="eyebrow violet"><i></i><span data-i18n="b.eyebrow">Companion app</span></div>
-            <h2>FishBrowser</h2>
-            <p data-i18n="b.p">A fast, dark browser built for gamers: a real ad blocker (EasyList, EasyPrivacy and uBlock's lists — YouTube ads included), every video starts at its highest quality up to 4K, Roblox's Play button opens straight into FishLaunch, real fullscreen, and the same look as the launcher.</p>
-            <div class="cta">
-              <a class="btn" id="dl-browser" href="https://github.com/roesuper/fishbrowser/releases/latest/download/FishBrowser-Setup.exe" data-i18n="b.download">Download FishBrowser</a>
-              <span class="meta" id="b-meta">v— · — MB</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="community" id="community" data-discord hidden>
-        <div class="community-card">
-          <div class="c-icon">
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor"><path d="M19.6 5.6A16 16 0 0 0 15.7 4.4l-.5 1a15 15 0 0 0-6.4 0l-.5-1a16 16 0 0 0-3.9 1.2C1.9 9.3 1.2 13 1.5 16.6a16 16 0 0 0 4.8 2.4l1-1.6a10 10 0 0 1-1.6-.8l.4-.3a11.5 11.5 0 0 0 11.8 0l.4.3-1.6.8 1 1.6a16 16 0 0 0 4.8-2.4c.4-4.2-.7-7.8-2.9-11ZM8.7 14.4c-.9 0-1.7-.9-1.7-2s.8-2 1.7-2 1.8.9 1.7 2c0 1.1-.7 2-1.7 2Zm6.6 0c-.9 0-1.7-.9-1.7-2s.8-2 1.7-2 1.8.9 1.7 2c0 1.1-.7 2-1.7 2Z"/></svg>
-          </div>
-          <div class="c-text">
-            <div class="eyebrow"><i></i><span data-i18n="c.eyebrow">Community</span></div>
-            <h2 data-i18n="c.h2">Join the Discord</h2>
-            <p data-i18n="c.p">Help when something breaks, a place to report bugs and vote on ideas, and a ping the moment a new version is out. Fishy is there.</p>
-            <div class="cta">
-              <a class="btn" data-discord href="#" target="_blank" rel="noopener" data-i18n="c.join">Join the server</a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="faq" id="faq">
-        <h2 data-i18n="faq.h2">Questions</h2>
-        <details open>
-          <summary data-i18n="q1">Windows says "unknown publisher" — is that normal?</summary>
-          <p data-i18n="a1">Yes. A Microsoft code-signing certificate costs a few hundred dollars a year, which a free app skips. Click <b>More info → Run anyway</b>. The download itself is served by GitHub, and every update is signed with FishLaunch's own key before your copy accepts it.</p>
-        </details>
-        <details>
-          <summary data-i18n="q5">"Smart App Control blocked an app that might be unsafe" — no Run anyway button?</summary>
-          <p data-i18n="a5">That is Windows 11's Smart App Control, which only allows apps with a paid publisher certificate. It cannot be bypassed per-app. Turn it off once: <b>Settings → Privacy &amp; security → Windows Security → App &amp; browser control → Smart App Control settings → Off</b>. Windows only lets you turn it back on with a clean reinstall (Microsoft's rule, not ours), and it's usually only on for brand-new Windows 11 PCs.</p>
-        </details>
-        <details>
-          <summary data-i18n="q2">Can it get me banned?</summary>
-          <p data-i18n="a2">No. FishLaunch downloads the official Roblox client from Roblox's own servers, writes two config files, and starts the exe. It never reads or touches the game process — there is nothing for the anti-cheat to see. Same for Fortnite / EAC.</p>
-        </details>
-        <details>
-          <summary data-i18n="q3">How do updates work?</summary>
-          <p data-i18n="a3">On start, FishLaunch checks GitHub for a newer signed release. If there is one you get an "Update now" banner; it downloads, installs and restarts in a few seconds. Nothing else is ever downloaded in the background.</p>
-        </details>
-        <details>
-          <summary data-i18n="q4">What does it send anywhere?</summary>
-          <p data-i18n="a4">Once a day, an anonymous +1 to a public counter so the owner can see how many people use it. No names, no IDs, no IP handling on our side. Accounts live only on your PC.</p>
-        </details>
-        <details>
-          <summary data-i18n="q6">Does "Launch boost" touch the game?</summary>
-          <p data-i18n="a6">No. Priority is a start-up flag and the P-core mask is inherited from FishLaunch at the moment Roblox is created — the game process is never opened, read or written, so there is nothing for Byfron or EAC to see. Focus mode only touches <i>other</i> apps (browsers, launchers, sync tools) and puts them back when you quit.</p>
-        </details>
-        <details>
-          <summary data-i18n="q7">Will it give me 300 FPS?</summary>
-          <p data-i18n="a7">Not from software alone, and anyone promising that is selling you something. What actually moves the number: the Potato preset, nothing fighting the game for the CPU (Launch boost), a 1080p tab instead of 4K while you play, a monitor running at its real refresh rate, and on a 16 GB single-stick PC a second RAM stick. The FPS Doctor in the app checks all of these on your PC in five seconds, and Smart Tune measures your FPS before and after so you see what really changed.</p>
-        </details>
       </section>
     </main>
 
-    <footer>
-      <span>© <span id="year"></span> Fishy · FishLaunch & FishBrowser</span>
-      <span><a href="changelog.html" data-i18n="foot.changelog">Changelog</a> · <a data-discord hidden href="#" target="_blank" rel="noopener">Discord</a> <span data-discord hidden>·</span> <a href="https://github.com/roesuper/fishlaunch" target="_blank" rel="noopener">GitHub</a> · <a href="https://github.com/roesuper/fishlaunch/releases" target="_blank" rel="noopener" data-i18n="foot.rel">All releases</a></span>
+    <footer class="footer">
+      <div class="wrap">
+        <div class="footer-grid">
+          <div>
+            <a class="brand" href="./" aria-label="FishyTweaks home">
+              <span class="mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill-rule="evenodd" d="M2.5 16C7 8.2 15.6 7.6 21.2 16 15.6 24.4 7 23.8 2.5 16Zm7.4-3.4a1.9 1.9 0 1 0 0 3.8 1.9 1.9 0 0 0 0-3.8Z"/><path d="M22.6 16 29.6 9.4 27.4 16l2.2 6.6Z"/></svg></span>
+              <span class="brand-name">Fishy<span>Tweaks</span></span>
+            </a>
+            <p class="about" data-i18n="foot.about">Transparent, reversible Windows tuning for Fortnite. Made by Fishy.</p>
+          </div>
+          <nav aria-label="Product" data-i18n-attr="aria-label:foot.product">
+            <h2 data-i18n="foot.product">Product</h2>
+            <ul>
+              <li><a href="#features" data-i18n="nav.features">Features</a></li>
+              <li><a href="changelog.html" data-i18n="nav.changelog">Changelog</a></li>
+              <li><a href="https://github.com/roesuper/fishlaunch/releases/latest" data-dl data-i18n="foot.download">Download</a></li>
+              <li><a href="https://github.com/roesuper/fishbrowser/releases/latest" target="_blank" rel="noopener">FishBrowser</a></li>
+            </ul>
+          </nav>
+          <nav aria-label="Help" data-i18n-attr="aria-label:foot.help">
+            <h2 data-i18n="foot.help">Help</h2>
+            <ul>
+              <li><a href="support.html" data-i18n="foot.support">Support</a></li>
+              <li><a href="#faq" data-i18n="nav.faq">FAQ</a></li>
+              <li data-discord hidden><a href="#" target="_blank" rel="noopener">Discord</a></li>
+            </ul>
+          </nav>
+          <nav aria-label="Legal" data-i18n-attr="aria-label:foot.legal">
+            <h2 data-i18n="foot.legal">Legal</h2>
+            <ul>
+              <li><a href="privacy.html" data-i18n="foot.privacy">Privacy</a></li>
+              <li><a href="https://github.com/roesuper/fishlaunch/releases" target="_blank" rel="noopener" data-i18n="foot.releases">All releases</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div class="footer-bottom">
+          <span>© <span id="year">2026</span> Fishy</span>
+          <span data-i18n="foot.note">Not affiliated with Epic Games or Microsoft.</span>
+        </div>
+      </div>
     </footer>
 
     <script src="main.js"></script>
