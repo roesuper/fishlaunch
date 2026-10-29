@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Heebo:wght@400;500;600&display=swap" />
     <link rel="preload" as="image" href="assets/screens/dashboard.webp" imagesrcset="assets/screens/dashboard.webp 1440w, assets/screens/dashboard@2x.webp 2880w" imagesizes="(min-width: 1360px) 1200px, 94vw" />
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="xform.css" />
     <script>
       // pick the language before first paint so Hebrew visitors never see an English flash
       (function () {
@@ -71,8 +72,9 @@
         <div class="wrap">
           <div class="hero-head">
             <h1>
-              <span class="line" data-i18n="hero.l1">Windows, tuned for Fortnite.</span>
-              <span class="line" data-i18n="hero.l2">Every change undoable.</span>
+              <span class="line"><span data-i18n="hero.l0">Your PC.</span></span>
+              <span class="line accent"><span data-i18n="hero.l1">Tuned for Fortnite.</span></span>
+              <span class="line"><span data-i18n="hero.l2">Every change undoable.</span></span>
             </h1>
             <div class="hero-side">
               <p class="lead" data-i18n="hero.sub">FishyTweaks gets Windows ready for Fortnite, shows you what limits your FPS, and puts every change back when you ask. One app, nothing hidden.</p>
@@ -112,6 +114,190 @@
             </div>
             <figcaption class="shot-note" data-i18n="shot.note" data-tap="Tap a screenshot to see it full size." data-i18n-attr="data-tap:shot.tap">FishyTweaks 0.9 interface. Numbers in the screenshots are sample data.</figcaption>
           </figure>
+        </div>
+      </section>
+
+      <!-- the Windows transformation: a scroll-driven illustration of what Game Mode does -->
+      <section class="xf" id="transform" aria-labelledby="xf-h">
+        <div class="xf-track">
+          <div class="xf-sticky">
+            <div class="xf-copy">
+              <p class="kicker" data-i18n="xf.k">How Game Mode works</p>
+              <h2 class="h2" id="xf-h" data-i18n="xf.h">Watch Windows get out of Fortnite's way.</h2>
+              <ol class="xf-caps">
+                <li class="xf-cap on" data-cap="0">
+                  <b data-i18n="xf.c1">A normal PC, a minute before the match.</b>
+                  <span data-i18n="xf.c1s">A browser full of tabs, Discord, Spotify, a launcher and sync apps all keep asking for CPU time while Fortnite starts.</span>
+                </li>
+                <li class="xf-cap" data-cap="1">
+                  <b data-i18n="xf.c2">They all share the same cores.</b>
+                  <span data-i18n="xf.c2s">None of them needs full speed while you play, but Windows treats them like the game.</span>
+                </li>
+                <li class="xf-cap" data-cap="2">
+                  <b data-i18n="xf.c3">Game Mode steps in when Fortnite starts.</b>
+                  <span data-i18n="xf.c3s">It checks the PC, moves background apps to Windows efficiency mode, sets Best performance, holds the 1&nbsp;ms timer, then reads every change back.</span>
+                </li>
+                <li class="xf-cap" data-cap="3">
+                  <b data-i18n="xf.c4">The match gets the PC. Windows gets it back after.</b>
+                  <span data-i18n="xf.c4s">Your antivirus and the game itself are never touched. When the match ends, every change is put back.</span>
+                </li>
+              </ol>
+              <div class="xf-dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
+              <p class="fine xf-note" data-i18n="xf.note">Illustration. The apps and numbers in this scene are an example, not a measurement of your PC.</p>
+            </div>
+
+            <div class="xf-stage" dir="ltr" aria-hidden="true">
+              <div class="xf-fit">
+                <div class="xf-cam">
+                  <div class="xf-desk">
+                    <!-- the screen plane: wallpaper, the end-of-scene dimming and the taskbar move as one -->
+                    <div class="xf-screen">
+                      <div class="xf-wall"></div>
+                      <div class="xf-shade"></div>
+                      <!-- taskbar -->
+                      <div class="xf-taskbar">
+                        <div class="xf-tbi">
+                          <i class="start"><b></b><b></b><b></b><b></b></i>
+                          <i class="search"><span>Search</span></i>
+                          <i style="--c:#f6c544"></i><i style="--c:#f59e0b"></i><i style="--c:#6366f1"></i><i style="--c:#22c55e"></i><i style="--c:#334155"></i>
+                          <i class="ft"><img src="favicon.svg?v=2" alt="" /></i>
+                        </div>
+                        <div class="xf-tray"><span>ENG</span><span class="xf-clock">21:04<br />29/10/2026</span></div>
+                      </div>
+                    </div>
+
+                    <!-- browser -->
+                    <div class="xf-win xf-browser" data-k="browser">
+                      <div class="xf-tb">
+                        <div class="xf-tabs">
+                          <span class="on"><i style="background:#ef4444"></i>Patch notes v32.10</span>
+                          <span><i style="background:#a855f7"></i>Live stream</span>
+                          <span><i style="background:#22c55e"></i>Sheets</span>
+                          <span><i style="background:#f59e0b"></i>+20</span>
+                        </div>
+                        <div class="xf-ctl"><i></i><i></i><i></i></div>
+                      </div>
+                      <div class="xf-url"><span>patch-notes.example/fortnite/v32-10</span></div>
+                      <div class="xf-page">
+                        <div class="xf-hero-img"></div>
+                        <div class="xf-lines"><i style="width:72%"></i><i style="width:88%"></i><i style="width:64%"></i><i style="width:80%"></i><i style="width:52%"></i></div>
+                        <div class="xf-video"><span>LIVE</span></div>
+                      </div>
+                    </div>
+
+                    <!-- game launcher -->
+                    <div class="xf-win xf-launch" data-k="launch">
+                      <div class="xf-tb"><b>Game launcher</b><div class="xf-ctl"><i></i><i></i><i></i></div></div>
+                      <div class="xf-launch-body">
+                        <div class="xf-cover"><b>FORTNITE</b></div>
+                        <div class="xf-launch-row">
+                          <span><b>Fortnite</b><small>Update ready · 2.1 GB</small></span>
+                          <em class="xf-launch-btn">Launch</em>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- task manager -->
+                    <div class="xf-win xf-tm" data-k="tm">
+                      <div class="xf-tb"><b>Task Manager</b><em class="xf-tag">Illustration</em><div class="xf-ctl"><i></i><i></i><i></i></div></div>
+                      <div class="xf-tm-body">
+                        <div class="xf-perf">
+                          <div class="xf-perf-head"><b>CPU</b><span class="xf-cpu-n">78%</span><small>Utilization · 60 seconds</small></div>
+                          <canvas class="xf-graph" width="440" height="120"></canvas>
+                          <div class="xf-mem"><span>Memory</span><div><i class="xf-mem-bar"></i></div><b class="xf-mem-n">12.4 / 16 GB</b></div>
+                        </div>
+                        <div class="xf-procs">
+                          <div class="xf-ph"><span>Name</span><span>Status</span><span>CPU</span><span>Memory</span></div>
+                          <div class="xf-p game" data-p="game"><span><i class="ic" style="background:#3b82f6"></i>Fortnite</span><em class="st">Untouched</em><span class="cpu">31%</span><span>3,912 MB</span></div>
+                          <div class="xf-p" data-p="bg"><span><i class="ic" style="background:#f59e0b"></i>Google Chrome (24)</span><em class="st"></em><span class="cpu" data-a="14" data-b="2">14%</span><span>2,846 MB</span></div>
+                          <div class="xf-p" data-p="bg"><span><i class="ic" style="background:#6366f1"></i>Discord (6)</span><em class="st"></em><span class="cpu" data-a="7" data-b="1">7%</span><span>612 MB</span></div>
+                          <div class="xf-p" data-p="pause"><span><i class="ic" style="background:#06b6d4"></i>Wallpaper Engine</span><em class="st"></em><span class="cpu" data-a="9" data-b="0">9%</span><span>488 MB</span></div>
+                          <div class="xf-p" data-p="bg"><span><i class="ic" style="background:#22c55e"></i>Spotify</span><em class="st"></em><span class="cpu" data-a="5" data-b="1">5%</span><span>395 MB</span></div>
+                          <div class="xf-p" data-p="bg"><span><i class="ic" style="background:#0ea5e9"></i>OneDrive</span><em class="st"></em><span class="cpu" data-a="4" data-b="0">4%</span><span>141 MB</span></div>
+                          <div class="xf-p" data-p="bg"><span><i class="ic" style="background:#64748b"></i>Steam Client WebHelper (8)</span><em class="st"></em><span class="cpu" data-a="6" data-b="1">6%</span><span>721 MB</span></div>
+                          <div class="xf-p sys" data-p="sys"><span><i class="ic" style="background:#94a3b8"></i>Antimalware Service</span><em class="st">Untouched</em><span class="cpu">2%</span><span>214 MB</span></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- FishyTweaks Game Mode (rebuilt from the app's own Game Mode screen) -->
+                    <div class="xf-win xf-ft" data-k="ft">
+                      <div class="xf-tb"><b class="xf-ft-brand"><svg viewBox="70 58 668 682"><path d="M 90 287 L 244 287 C 256 287 264 269 276 250 C 292 227 310 219 336 219 L 588 219 C 630 218 684 174 720 94 C 727 80 722 68 708 68 L 330 68 C 214 67 134 158 87 264 C 82 278 84 287 90 287 Z"/><path d="M 288 362 C 288 340 302 328 324 328 L 594 328 C 603 328 607 336 603 346 C 580 410 520 472 440 474 L 335 476 C 316 476 302 481 294 489 C 290 493 288 490 288 484 Z"/><path d="M 80 376 C 80 352 95 339 118 339 L 204 339 C 226 339 239 352 239 374 L 239 545 C 239 612 158 688 95 726 C 87 731 80 727 80 719 Z"/></svg>FishyTweaks</b><div class="xf-ctl"><i></i><i></i><i></i></div></div>
+                      <div class="xf-ft-body">
+                        <div class="xf-ft-head">
+                          <div class="xf-ring"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" /><circle class="xf-ring-p" cx="22" cy="22" r="19" pathLength="1" /></svg><span class="xf-ring-n">0/7</span></div>
+                          <div><b class="xf-ft-title">Game Mode</b><small class="xf-ft-sub">Fortnite is starting</small></div>
+                        </div>
+                        <ol class="xf-steps">
+                          <li data-s="0"><i></i>Check the PC and Fortnite</li>
+                          <li data-s="1"><i></i>Pause Wallpaper Engine</li>
+                          <li data-s="2"><i></i>Lower background apps</li>
+                          <li data-s="3"><i></i>Windows power mode: Best performance</li>
+                          <li data-s="4"><i></i>Hold the 1 ms timer</li>
+                          <li data-s="5"><i></i>Free memory if it's low</li>
+                          <li data-s="6"><i></i>Read every change back to verify it</li>
+                        </ol>
+                        <div class="xf-ft-foot"><span class="xf-ok">Verified · 7 of 7 changes in place</span><em>Undone when the match ends</em></div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <svg class="xf-trails"></svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- before / after: what Game Mode changes, side by side -->
+      <section class="section ba" id="compare">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <p class="kicker" data-i18n="ba.k">Before and after</p>
+            <h2 class="h2" data-i18n="ba.h">The same PC, one match apart.</h2>
+            <p class="lead" data-i18n="ba.sub">Drag across to compare Windows before Game Mode and while it runs. These are the settings it changes on every PC, not a benchmark.</p>
+          </div>
+          <div class="ba-box reveal" dir="ltr" style="--ba: 50">
+            <div class="ba-pane before" aria-hidden="true">
+              <div class="ba-scene"></div>
+              <ul class="ba-procs">
+                <li><i style="background:#f59e0b"></i>Google Chrome (24)<em>Normal</em></li>
+                <li><i style="background:#6366f1"></i>Discord (6)<em>Normal</em></li>
+                <li><i style="background:#06b6d4"></i>Wallpaper Engine<em>Running</em></li>
+                <li><i style="background:#22c55e"></i>Spotify<em>Normal</em></li>
+                <li><i style="background:#64748b"></i>Steam Client WebHelper (8)<em>Normal</em></li>
+              </ul>
+              <div class="ba-stats">
+                <div><small data-i18n="ba.power">Power mode</small><b data-i18n="ba.power.a">Balanced</b></div>
+                <div><small data-i18n="ba.timer">System timer</small><b class="ltr">15.6 ms</b></div>
+                <div><small data-i18n="ba.bg">Background apps</small><b data-i18n="ba.bg.a">Normal priority</b></div>
+                <div><small>Wallpaper Engine</small><b data-i18n="ba.we.a">Running</b></div>
+              </div>
+            </div>
+            <div class="ba-pane after" aria-hidden="true">
+              <div class="ba-scene"></div>
+              <ul class="ba-procs">
+                <li><i style="background:#f59e0b"></i>Google Chrome (24)<em class="eff">Efficiency mode</em></li>
+                <li><i style="background:#6366f1"></i>Discord (6)<em class="eff">Efficiency mode</em></li>
+                <li><i style="background:#06b6d4"></i>Wallpaper Engine<em class="pause">Paused</em></li>
+                <li><i style="background:#22c55e"></i>Spotify<em class="eff">Efficiency mode</em></li>
+                <li><i style="background:#64748b"></i>Steam Client WebHelper (8)<em class="eff">Efficiency mode</em></li>
+              </ul>
+              <div class="ba-stats">
+                <div><small data-i18n="ba.power">Power mode</small><b data-i18n="ba.power.b">Best performance</b></div>
+                <div><small data-i18n="ba.timer">System timer</small><b class="ltr">1.0 ms</b></div>
+                <div><small data-i18n="ba.bg">Background apps</small><b data-i18n="ba.bg.b">Efficiency mode</b></div>
+                <div><small>Wallpaper Engine</small><b data-i18n="ba.we.b">Paused</b></div>
+              </div>
+            </div>
+            <span class="ba-tag before" data-i18n="ba.t1">Before</span>
+            <span class="ba-tag after" data-i18n="ba.t2">With Game Mode</span>
+            <div class="ba-handle" role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-label="Compare before and with Game Mode" data-i18n-attr="aria-label:ba.aria">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6" /></svg></span>
+            </div>
+          </div>
+          <p class="fine ba-note" data-i18n="ba.note">Example apps. Game Mode only lowers apps it's allowed to; it never touches the game or your antivirus, and every setting goes back when the match ends.</p>
         </div>
       </section>
 
@@ -355,7 +541,8 @@
 
       <!-- final CTA -->
       <section class="section final" id="download">
-        <div class="wrap reveal">
+        <div class="wrap final-grid">
+          <div class="final-copy reveal">
           <div class="mark-lg" aria-hidden="true"><svg viewBox="70 58 668 682" aria-hidden="true"><path d="M 90 287 L 244 287 C 256 287 264 269 276 250 C 292 227 310 219 336 219 L 588 219 C 630 218 684 174 720 94 C 727 80 722 68 708 68 L 330 68 C 214 67 134 158 87 264 C 82 278 84 287 90 287 Z"/><path d="M 288 362 C 288 340 302 328 324 328 L 594 328 C 603 328 607 336 603 346 C 580 410 520 472 440 474 L 335 476 C 316 476 302 481 294 489 C 290 493 288 490 288 484 Z"/><path d="M 80 376 C 80 352 95 339 118 339 L 204 339 C 226 339 239 352 239 374 L 239 545 C 239 612 158 688 95 726 C 87 731 80 727 80 719 Z"/></svg></div>
           <h2 class="h2" data-i18n="end.h">Tune it once. Undo it any time.</h2>
           <p class="lead" data-i18n="end.p">Free for Windows 10 and 11. Installs in seconds and keeps itself up to date.</p>
@@ -372,6 +559,13 @@
             <li><a class="link" href="https://github.com/roesuper/fishlaunch/releases" target="_blank" rel="noopener" data-i18n="end.all">All releases</a></li>
           </ul>
           <p class="fine rename-note" data-rename hidden data-i18n="end.rename">This release was published before the rename, so the installer is still called FishLaunch.</p>
+          </div>
+          <figure class="final-shot">
+            <div class="window" aria-hidden="true">
+              <img src="assets/screens/gamemode.webp" srcset="assets/screens/gamemode.webp 1440w, assets/screens/gamemode@2x.webp 2880w" sizes="(min-width: 1000px) 720px, 92vw" width="1440" height="900" alt="" loading="lazy" decoding="async" />
+            </div>
+            <figcaption class="fine final-cap" data-i18n="end.cap">Game Mode in FishyTweaks 0.9. The numbers are sample data.</figcaption>
+          </figure>
         </div>
       </section>
     </main>
@@ -419,5 +613,6 @@
     </footer>
 
     <script src="main.js"></script>
+    <script src="xform.js" defer></script>
   </body>
 </html>

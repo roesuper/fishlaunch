@@ -1,0 +1,1261 @@
+/* ================= The Windows transformation (index only) =================
+   A sticky stage that scroll drives through four beats: a busy desktop, the camera finding Task
+   Manager, FishyTweaks Game Mode working through its real checklist, and the calm result. The
+   desktop is drawn at a fixed 1280×780 and scaled to fit (--xf-s, set by xform.js); the camera is
+   one transform on .xf-cam and each window adds its own depth. Without JS, or with reduced motion,
+   the section shows the finished state as a normal block. */
+
+.xf {
+  position: relative;
+  /* the 3D layers reach past the edges; clip (not hidden) keeps position: sticky working */
+  overflow-x: clip;
+  border-top: 1px solid var(--line);
+  background:
+    radial-gradient(1200px 700px at 70% 40%, rgba(59, 130, 246, 0.08), transparent 70%),
+    var(--bg);
+}
+.xf-track {
+  position: relative;
+}
+.xf-sticky {
+  display: grid;
+  grid-template-columns: minmax(290px, 0.52fr) minmax(0, 1.6fr);
+  align-items: center;
+  gap: clamp(16px, 2vw, 32px);
+  max-width: calc(var(--wrap) + 420px + var(--gutter) * 2);
+  margin-inline: auto;
+  padding: 96px var(--gutter);
+}
+.xf.live .xf-track {
+  height: 420vh;
+}
+.xf.live .xf-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  padding-block: calc(var(--nav-h) + 12px) 24px;
+}
+
+/* ---------- copy ---------- */
+.xf-copy {
+  position: relative;
+  z-index: 2;
+}
+.xf-copy .h2 {
+  margin-bottom: 26px;
+}
+.xf-caps {
+  list-style: none;
+  display: grid;
+}
+.xf-cap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 0 16px 18px;
+  border-inline-start: 2px solid var(--line-2);
+  transition: border-color 0.45s var(--ease), opacity 0.45s var(--ease);
+}
+.xf-cap b {
+  font-size: var(--t-18);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+.xf-cap span {
+  color: var(--muted);
+  font-size: var(--t-14);
+  line-height: 1.6;
+}
+.xf-cap.on {
+  border-color: var(--accent);
+}
+.xf.live .xf-caps {
+  grid-template-areas: "cap";
+}
+.xf.live .xf-cap {
+  grid-area: cap;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s var(--ease), transform 0.6s var(--ease-out), border-color 0.4s;
+  pointer-events: none;
+}
+.xf.live .xf-cap.on {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.xf-dots {
+  display: none;
+  gap: 6px;
+  margin-top: 22px;
+}
+.xf.live .xf-dots {
+  display: flex;
+}
+.xf-dots i {
+  width: 22px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--line-2);
+  transition: background 0.4s, width 0.4s var(--ease-out);
+}
+.xf-dots i.on {
+  width: 36px;
+  background: var(--accent);
+}
+.xf-note {
+  margin-top: 18px;
+  max-width: 44ch;
+}
+
+/* ---------- stage ---------- */
+.xf-stage {
+  position: relative;
+  height: min(70vh, 640px);
+  perspective: 2200px;
+  perspective-origin: 50% 40%;
+}
+.xf.live .xf-stage {
+  height: 100%;
+  max-height: 860px;
+}
+.xf-fit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1280px;
+  height: 780px;
+  margin: -390px 0 0 -640px;
+  transform: scale(var(--xf-s, 0.6));
+  transform-style: preserve-3d;
+}
+.xf-cam {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.xf-desk {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  transform-style: preserve-3d;
+}
+/* the screen plane sits 400px back (scaled to look the same size), so windows can move behind
+   z = 0 without vanishing into the wallpaper; the taskbar lives on it so the two never drift apart */
+.xf-screen {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  transform: translateZ(-400px) scale(1.1818);
+}
+/* our own wallpaper: deep blue folds of light, nothing borrowed */
+.xf-wall {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  background:
+    radial-gradient(60% 80% at 78% 112%, rgba(34, 211, 238, 0.35), transparent 60%),
+    radial-gradient(70% 90% at 20% 110%, rgba(59, 130, 246, 0.55), transparent 62%),
+    radial-gradient(40% 50% at 52% 70%, rgba(99, 102, 241, 0.35), transparent 70%),
+    conic-gradient(from 210deg at 50% 120%, #0b1730, #13306b 25%, #0b1730 45%, #1a3f8f 60%, #0b1730 80%),
+    #0a1224;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.07), 0 60px 140px -40px rgba(0, 0, 0, 0.9), 0 0 140px -30px rgba(59, 130, 246, 0.3);
+}
+.xf-wall::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background: repeating-radial-gradient(ellipse at 50% 130%, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 46px);
+  mix-blend-mode: screen;
+}
+/* the lighting change at the end: the room dims, the focus stays on the app */
+.xf-shade {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(80% 90% at 70% 45%, rgba(4, 8, 16, 0.1), rgba(4, 8, 16, 0.72));
+  opacity: var(--xf-shade, 0);
+  pointer-events: none;
+}
+
+/* ---------- windows ---------- */
+.xf-win {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #1c1f26;
+  color: #e7e9ee;
+  font: 13px/1.4 "Segoe UI Variable Text", "Segoe UI", var(--font);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.09), 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 24px 60px -18px rgba(0, 0, 0, 0.75), 0 8px 18px -8px rgba(0, 0, 0, 0.6);
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+.xf-win::after {
+  /* the dimming used for depth of field: cheaper than a blur on a big layer */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #05080f;
+  opacity: var(--dim, 0);
+  pointer-events: none;
+}
+.xf-tb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 36px;
+  padding: 0 0 0 14px;
+  background: #23262e;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 12px;
+  flex: none;
+}
+.xf-tb b {
+  font-weight: 500;
+}
+.xf-ctl {
+  margin-inline-start: auto;
+  display: flex;
+  height: 100%;
+}
+.xf-ctl i {
+  width: 44px;
+  position: relative;
+}
+.xf-ctl i::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 1px;
+  background: #aab0bc;
+  transform: translate(-50%, -50%);
+}
+.xf-ctl i:nth-child(2)::before {
+  height: 9px;
+  background: none;
+  border: 1px solid #aab0bc;
+}
+.xf-ctl i:nth-child(3)::before {
+  background: linear-gradient(45deg, transparent 45%, #aab0bc 45% 55%, transparent 55%), linear-gradient(-45deg, transparent 45%, #aab0bc 45% 55%, transparent 55%);
+  height: 10px;
+}
+.xf-tag {
+  font-style: normal;
+  font-size: 10.5px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  color: #fcd34d;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* browser */
+.xf-browser {
+  left: 30px;
+  top: 34px;
+  width: 640px;
+  height: 430px;
+}
+.xf-browser .xf-tb {
+  padding-left: 8px;
+  background: #202329;
+}
+.xf-tabs {
+  display: flex;
+  gap: 2px;
+  align-self: flex-end;
+  min-width: 0;
+}
+.xf-tabs span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 8px 8px 0 0;
+  color: #b9bec9;
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+.xf-tabs span.on {
+  background: #2b2f37;
+  color: #fff;
+}
+.xf-tabs i {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+.xf-url {
+  padding: 7px 10px;
+  background: #2b2f37;
+}
+.xf-url span {
+  display: block;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #1c1f26;
+  color: #9aa1ad;
+  font-size: 11.5px;
+}
+.xf-page {
+  position: relative;
+  flex: 1;
+  padding: 18px;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 16px;
+  background: #15171c;
+}
+.xf-hero-img {
+  border-radius: 8px;
+  background: linear-gradient(135deg, #1e3a8a, #0e7490 60%, #164e63);
+  min-height: 150px;
+}
+.xf-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 6px;
+}
+.xf-lines i {
+  height: 9px;
+  border-radius: 5px;
+  background: #2a2e36;
+}
+.xf-video {
+  grid-column: 1 / -1;
+  border-radius: 8px;
+  min-height: 120px;
+  background: radial-gradient(60% 80% at 30% 40%, #4c1d95, transparent), linear-gradient(120deg, #1f2937, #111827);
+  position: relative;
+}
+.xf-video span {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #dc2626;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+/* launcher */
+.xf-launch {
+  left: 120px;
+  top: 360px;
+  width: 430px;
+  height: 300px;
+}
+.xf-launch-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #121418;
+}
+.xf-cover {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(80% 90% at 30% 20%, #2563eb, transparent 65%), radial-gradient(70% 80% at 85% 90%, #7c3aed, transparent 60%), #0f172a;
+}
+.xf-cover b {
+  font: 800 34px/1 var(--font);
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+.xf-launch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+}
+.xf-launch-row span {
+  display: flex;
+  flex-direction: column;
+}
+.xf-launch-row small {
+  color: #8b93a1;
+  font-size: 11px;
+}
+.xf-launch-btn {
+  font-style: normal;
+  font-weight: 600;
+  padding: 7px 18px;
+  border-radius: 6px;
+  background: #0078f2;
+}
+
+/* task manager */
+.xf-tm {
+  left: 560px;
+  top: 76px;
+  width: 660px;
+  height: 500px;
+  background: #1b1d22;
+}
+.xf-tm-body {
+  flex: 1;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+.xf-perf {
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.xf-perf-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.xf-perf-head b {
+  font-size: 15px;
+  font-weight: 600;
+}
+.xf-cpu-n {
+  font: 600 15px/1 var(--mono);
+  color: var(--xf-cpu-c, #f59e0b);
+  transition: color 0.6s;
+}
+.xf-perf-head small {
+  margin-left: auto;
+  color: #8b93a1;
+  font-size: 11px;
+}
+.xf-graph {
+  display: block;
+  width: 100%;
+  height: 120px;
+  border-radius: 4px;
+  background: #15171b;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+.xf-mem {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  font-size: 11.5px;
+  color: #9aa1ad;
+}
+.xf-mem div {
+  height: 6px;
+  border-radius: 3px;
+  background: #2a2d34;
+  overflow: hidden;
+}
+.xf-mem-bar {
+  display: block;
+  height: 100%;
+  width: var(--xf-mem, 78%);
+  background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+  transition: width 0.25s linear;
+}
+.xf-mem b {
+  font: 500 11.5px var(--mono);
+  color: #d4d7de;
+}
+.xf-procs {
+  padding: 4px 6px 8px;
+  font-size: 12px;
+}
+.xf-ph,
+.xf-p {
+  display: grid;
+  grid-template-columns: 1fr 130px 54px 82px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+}
+.xf-ph {
+  height: 28px;
+  color: #8b93a1;
+  font-size: 11px;
+}
+.xf-ph span:nth-child(n + 3),
+.xf-p > span:nth-child(n + 3) {
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 11.5px;
+}
+.xf-p {
+  position: relative;
+  height: 31px;
+  border-radius: 5px;
+  transition: background 0.45s var(--ease), color 0.45s;
+}
+.xf-p > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.xf-p .ic {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  flex: none;
+}
+.xf-p .cpu {
+  transition: color 0.4s;
+}
+/* busy rows heat up like Task Manager's yellow cells */
+.xf-p.hot {
+  background: rgba(245, 158, 11, 0.09);
+}
+.xf-p.hot .cpu {
+  color: #fbbf24;
+}
+.xf-p .st {
+  font-style: normal;
+  font-size: 11px;
+  color: #8b93a1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.xf-p.game .st,
+.xf-p.sys .st {
+  color: #8b93a1;
+}
+.xf-p.game {
+  background: rgba(59, 130, 246, 0.1);
+}
+.xf-p.managed {
+  color: #9aa1ad;
+}
+.xf-p.managed .st {
+  color: #34d399;
+}
+.xf-p.managed .st::before {
+  /* the efficiency-mode leaf, as Task Manager shows it */
+  content: "";
+  width: 11px;
+  height: 11px;
+  flex: none;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M14 2C7 2 3 5 3 10c0 1 .2 2 .6 2.8C2.3 13.6 2 14.3 2 15h1c0-.5.4-1 1.1-1.5C5 14.4 6.3 15 8 15c4 0 6-4 6-13z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M14 2C7 2 3 5 3 10c0 1 .2 2 .6 2.8C2.3 13.6 2 14.3 2 15h1c0-.5.4-1 1.1-1.5C5 14.4 6.3 15 8 15c4 0 6-4 6-13z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.xf-p.paused .st {
+  color: #67e8f9;
+}
+.xf-p.flash {
+  animation: xf-flash 0.9s var(--ease-out);
+}
+@keyframes xf-flash {
+  0% {
+    background: rgba(34, 211, 238, 0.28);
+  }
+}
+
+/* FishyTweaks */
+.xf-ft {
+  left: 770px;
+  top: 118px;
+  width: 470px;
+  height: 520px;
+  background: #121821;
+  box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.22), 0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 40px 90px -24px rgba(0, 0, 0, 0.85), 0 0 80px -20px rgba(59, 130, 246, 0.45);
+}
+.xf-ft .xf-tb {
+  background: #0e131a;
+}
+.xf-ft-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600 !important;
+}
+.xf-ft-brand svg {
+  width: 16px;
+  height: 16px;
+  fill: url(#ft-grad);
+}
+.xf-ft-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 22px;
+  background: radial-gradient(90% 60% at 100% 0%, rgba(59, 130, 246, 0.12), transparent 70%), linear-gradient(180deg, #161d28, #10151d);
+}
+.xf-ft-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.xf-ft-head > div:last-child {
+  display: flex;
+  flex-direction: column;
+}
+.xf-ft-title {
+  font: 600 20px/1.2 "Segoe UI Variable Display", "Segoe UI", var(--font);
+  letter-spacing: -0.01em;
+}
+.xf-ft-sub {
+  color: #a1a1aa;
+  font-size: 12.5px;
+}
+.xf-ring {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  flex: none;
+}
+.xf-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.xf-ring circle {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 3.5;
+}
+.xf-ring .xf-ring-p {
+  stroke: url(#ft-grad);
+  stroke: #3b82f6;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: var(--xf-ring, 1);
+  filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.7));
+}
+.xf-ring-n {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font: 600 12px var(--mono);
+}
+.xf-steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.xf-steps li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 8px;
+  color: #71717a;
+  font-size: 13.5px;
+  transition: color 0.35s, background 0.35s;
+}
+.xf-steps li i {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  border-radius: 50%;
+  border: 1.5px solid #3f4652;
+  transition: border-color 0.3s, background 0.3s;
+}
+.xf-steps li.run {
+  color: #e4e4e7;
+  background: rgba(59, 130, 246, 0.1);
+}
+.xf-steps li.run i {
+  border-color: #3b82f6;
+  border-right-color: transparent;
+  animation: xf-spin 0.8s linear infinite;
+}
+.xf-steps li.done {
+  color: #d4d4d8;
+}
+.xf-steps li.done i {
+  border-color: #22c55e;
+  background: #22c55e;
+}
+.xf-steps li.done i::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid #0b0f14;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+@keyframes xf-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.xf-ft-foot {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 12px;
+  opacity: var(--xf-foot, 0);
+  transform: translateY(calc((1 - var(--xf-foot, 0)) * 8px));
+}
+.xf-ok {
+  color: #4ade80;
+  font-weight: 600;
+}
+.xf-ft-foot em {
+  font-style: normal;
+  color: #a1a1aa;
+}
+
+/* taskbar */
+.xf-taskbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 0 14px 14px;
+  background: rgba(20, 24, 32, 0.86);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(20px);
+}
+.xf-tbi {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.xf-tbi > i {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+.xf-tbi > i[style]::before {
+  content: "";
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--c);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.xf-tbi > i.start {
+  grid-template-columns: 9px 9px;
+  gap: 2px;
+  place-content: center;
+}
+.xf-tbi > i.start b {
+  width: 9px;
+  height: 9px;
+  border-radius: 1px;
+  background: #4ea1ff;
+}
+.xf-tbi > i.search {
+  width: 160px;
+  justify-content: start;
+  padding-left: 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #9aa1ad;
+  font-style: normal;
+  font-size: 12px;
+}
+.xf-tbi > i.ft {
+  background: rgba(255, 255, 255, var(--xf-ft-on, 0));
+}
+.xf-tbi > i.ft img {
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+}
+.xf-tbi > i.ft::after,
+.xf-tbi > i:nth-child(5)::after {
+  content: "";
+  position: absolute;
+  bottom: 1px;
+  width: 6px;
+  height: 3px;
+  border-radius: 2px;
+  background: #8b93a1;
+}
+.xf-tbi > i.ft::after {
+  width: calc(6px + var(--xf-ft-on, 0) * 80px);
+  background: #3b82f6;
+}
+.xf-tray {
+  position: absolute;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #d4d7de;
+  font-size: 11px;
+  text-align: right;
+  line-height: 1.3;
+}
+
+/* the light lines from a Game Mode step to the rows it changed (screen space, drawn by xform.js) */
+.xf-trails {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 3;
+}
+.xf-trails path {
+  fill: none;
+  stroke: url(#xf-trail-g);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 4px rgba(34, 211, 238, 0.8));
+}
+
+/* ---------- static (no JS / reduced motion): the finished state, laid out flat ---------- */
+.xf:not(.live) .xf-cam {
+  transform: none !important;
+}
+
+/* ---------- smaller screens: copy on top, stage below, no camera tilt ---------- */
+@media (max-width: 1000px) {
+  .xf-sticky {
+    grid-template-columns: 1fr;
+    align-content: start;
+  }
+  .xf.live .xf-sticky {
+    grid-template-rows: auto 1fr;
+    gap: 8px;
+  }
+  .xf.live .xf-stage {
+    overflow: hidden;
+    border-radius: 14px;
+    margin-inline: calc(var(--gutter) * -0.5);
+  }
+  .xf.live .xf-track {
+    height: 300vh;
+  }
+  .xf-copy .h2 {
+    margin-bottom: 10px;
+    font-size: clamp(1.5rem, 1.1rem + 2vw, 2rem);
+  }
+  .xf.live .xf-cap {
+    padding-block: 8px;
+  }
+  .xf-note {
+    margin-top: 8px;
+  }
+  .xf.live .xf-dots {
+    margin-top: 10px;
+  }
+}
+@media (max-width: 1000px) and (max-height: 760px) {
+  .xf.live .xf-cap span {
+    display: none;
+  }
+}
+
+/* ================= Before / after: the settings Game Mode changes ================= */
+@property --ba {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 50;
+}
+.ba-box {
+  position: relative;
+  aspect-ratio: 16 / 7;
+  border-radius: 16px;
+  overflow: hidden;
+  user-select: none;
+  touch-action: pan-y;
+  cursor: ew-resize;
+  box-shadow: 0 0 0 1px var(--line-2), 0 40px 100px -40px rgba(0, 0, 0, 0.9), 0 0 120px -40px rgba(59, 130, 246, 0.35);
+  font: 13px/1.4 "Segoe UI Variable Text", "Segoe UI", var(--font);
+}
+.ba-box.snap {
+  transition: --ba 0.32s var(--ease-out);
+}
+.ba-pane {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding: clamp(14px, 2.4vw, 28px);
+  gap: 16px;
+  isolation: isolate;
+}
+.ba-pane.after {
+  clip-path: inset(0 0 0 calc(var(--ba) * 1%));
+}
+.ba-scene {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+.before .ba-scene {
+  background:
+    radial-gradient(50% 60% at 22% 30%, rgba(245, 158, 11, 0.22), transparent 70%),
+    radial-gradient(60% 70% at 80% 100%, rgba(239, 68, 68, 0.16), transparent 70%),
+    conic-gradient(from 200deg at 50% 120%, #1a1408, #2b1d0b 30%, #141018 60%, #22160a 85%),
+    #120e0a;
+}
+.after .ba-scene {
+  background:
+    radial-gradient(60% 80% at 78% 112%, rgba(34, 211, 238, 0.32), transparent 60%),
+    radial-gradient(70% 90% at 20% 110%, rgba(59, 130, 246, 0.5), transparent 62%),
+    conic-gradient(from 210deg at 50% 120%, #0b1730, #13306b 25%, #0b1730 45%, #1a3f8f 60%, #0b1730 80%),
+    #0a1224;
+}
+.ba-procs {
+  list-style: none;
+  align-self: start;
+  margin-top: 40px;
+  width: min(440px, 62%);
+  padding: 8px;
+  border-radius: 12px;
+  background: rgba(16, 18, 24, 0.82);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 20px 50px -20px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+}
+.ba-procs li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 7px;
+  color: #d4d7de;
+  white-space: nowrap;
+}
+.ba-procs li i {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  flex: none;
+}
+.ba-procs em {
+  margin-left: auto;
+  font-style: normal;
+  font-size: 12px;
+  color: #fbbf24;
+}
+.before .ba-procs li {
+  background: rgba(245, 158, 11, 0.06);
+}
+.ba-procs em.eff {
+  color: #34d399;
+}
+.ba-procs em.pause {
+  color: #67e8f9;
+}
+.ba-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.ba-stats div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(12, 14, 20, 0.78);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+}
+.ba-stats small {
+  color: #a1a1aa;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.ba-stats b {
+  font-size: clamp(14px, 1.5vw, 19px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.before .ba-stats b {
+  color: #fcd9a0;
+}
+.after .ba-stats b {
+  color: #fff;
+}
+.ba-tag {
+  position: absolute;
+  top: 16px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  pointer-events: none;
+}
+.ba-tag.before {
+  left: 16px;
+  background: rgba(10, 12, 16, 0.75);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+  opacity: clamp(0, calc((var(--ba) - 14) / 10), 1);
+}
+.ba-tag.after {
+  right: 16px;
+  color: #fff;
+  background: var(--accent);
+  opacity: clamp(0, calc((86 - var(--ba)) / 10), 1);
+}
+.ba-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--ba) * 1%);
+  width: 0;
+  outline: none;
+}
+.ba-handle::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -1px;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, #fff 12%, #fff 88%, transparent);
+  box-shadow: 0 0 18px rgba(96, 165, 250, 0.8);
+}
+.ba-handle span {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0 -23px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #0b0f14;
+  background: #fff;
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.14), 0 10px 30px -6px rgba(0, 0, 0, 0.7);
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s;
+}
+.ba-handle span svg {
+  width: 20px;
+  height: 20px;
+}
+.ba-box:hover .ba-handle span,
+.ba-box.drag .ba-handle span {
+  transform: scale(1.08);
+  box-shadow: 0 0 0 9px rgba(96, 165, 250, 0.22), 0 12px 34px -6px rgba(0, 0, 0, 0.7);
+}
+.ba-handle:focus-visible span {
+  box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px var(--accent-hi);
+}
+.ba-note {
+  margin-top: 16px;
+  max-width: 70ch;
+}
+@media (max-width: 700px) {
+  .ba-box {
+    aspect-ratio: 4 / 5.4;
+  }
+  .ba-procs {
+    width: 100%;
+  }
+  .ba-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ================= Hero: three-line headline and the app window in 3D =================
+   Entrance, in order: the lines unmask one by one, the side copy settles, the button arrives, then
+   the window rises out of a tilt. At rest the window keeps a slight tilt that flattens as you start
+   scrolling and leans a few degrees toward the mouse; a soft light on its glass follows the pointer. */
+.hero h1 .line {
+  animation: none;
+}
+.hero h1 .line > span {
+  display: inline-block;
+  animation: line-in 0.95s var(--ease-out) both;
+}
+.hero h1 .line:nth-child(2) > span {
+  animation-delay: 90ms;
+}
+.hero h1 .line:nth-child(3) > span {
+  animation-delay: 180ms;
+}
+.hero h1 .line.accent {
+  color: transparent;
+  background: linear-gradient(100deg, #60a5fa, #3b82f6 45%, #22d3ee);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.hero h1 .line.accent > span {
+  background: inherit;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+@keyframes line-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.45em);
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 -20% 0);
+  }
+}
+.hero-side {
+  animation-delay: 320ms;
+}
+.hero-actions {
+  animation: rise 0.8s var(--ease-out) 440ms both;
+}
+.hero-shot {
+  perspective: 1900px;
+  perspective-origin: 50% 0%;
+  animation: none;
+}
+.hero-shot .window {
+  transform-origin: 50% 0%;
+  transform: rotateX(var(--hx, 0deg)) rotateY(var(--hy, 0deg));
+  animation: window-in 1.4s var(--ease-out) 560ms both;
+}
+.hero-shot .showcase-bar {
+  animation: rise 0.8s var(--ease-out) 640ms both;
+}
+@keyframes window-in {
+  from {
+    opacity: 0;
+    transform: translateY(70px) rotateX(26deg) scale(0.96);
+  }
+}
+/* glass: a soft highlight that follows the pointer */
+.hero-shot .window::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: radial-gradient(42% 52% at var(--gx, 50%) var(--gy, 0%), rgba(255, 255, 255, 0.075), transparent 70%);
+  mix-blend-mode: screen;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-shot .window {
+    transform: none;
+  }
+}
+
+/* ================= Final download: copy on the left, the real app lit in blue on the right ================= */
+.final {
+  position: relative;
+  overflow: clip;
+  text-align: start;
+  background:
+    radial-gradient(900px 520px at 78% 55%, rgba(59, 130, 246, 0.2), transparent 70%),
+    radial-gradient(600px 300px at 70% 100%, rgba(34, 211, 238, 0.08), transparent 70%),
+    var(--bg);
+}
+.final-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 72px);
+}
+.final .mark-lg {
+  margin: 0 0 28px;
+}
+.final .lead {
+  margin: 18px 0 34px;
+}
+.final .hero-actions,
+.final .facts {
+  justify-content: flex-start;
+}
+.final-shot {
+  perspective: 1600px;
+  perspective-origin: 30% 40%;
+}
+.final-shot .window {
+  transform: rotateY(-17deg) rotateX(5deg) rotateZ(0.6deg);
+  transform-origin: 0% 50%;
+  box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.25), -30px 50px 120px -30px rgba(0, 0, 0, 0.9), 0 0 140px -30px rgba(59, 130, 246, 0.55);
+}
+.final-shot .window::before {
+  /* a rim of light along the top edge, as if lit from above */
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(147, 197, 253, 0.18), transparent 18%), linear-gradient(90deg, rgba(0, 0, 0, 0.25), transparent 30%);
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .final-shot .window {
+      animation: final-turn linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 55%;
+    }
+  }
+}
+@keyframes final-turn {
+  from {
+    opacity: 0.2;
+    transform: rotateY(-34deg) rotateX(10deg) translateX(60px);
+  }
+  to {
+    opacity: 1;
+    transform: rotateY(-17deg) rotateX(5deg) rotateZ(0.6deg);
+  }
+}
+[dir="rtl"] .final-shot {
+  perspective-origin: 70% 40%;
+}
+[dir="rtl"] .final-shot .window {
+  transform: rotateY(17deg) rotateX(5deg) rotateZ(-0.6deg);
+  transform-origin: 100% 50%;
+}
+[dir="rtl"] .final-shot .window {
+  animation-name: final-turn-rtl;
+}
+@keyframes final-turn-rtl {
+  from {
+    opacity: 0.2;
+    transform: rotateY(34deg) rotateX(10deg) translateX(-60px);
+  }
+  to {
+    opacity: 1;
+    transform: rotateY(17deg) rotateX(5deg) rotateZ(-0.6deg);
+  }
+}
+@media (max-width: 900px) {
+  .final-grid {
+    grid-template-columns: 1fr;
+  }
+  .final-shot .window,
+  [dir="rtl"] .final-shot .window {
+    transform: rotateX(8deg);
+    transform-origin: 50% 0%;
+    animation: none;
+  }
+}
+
+.final-cap {
+  margin-top: 22px;
+  text-align: center;
+}
