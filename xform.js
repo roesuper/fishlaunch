@@ -1,7 +1,7 @@
 // The Windows transformation (index only). One progress value p in [0, 1] drives everything:
 // every transform, row state and caption is a pure function of p, so any point can be jumped to and
-// rewinding shows exactly the same frames. p plays by itself like a short film and can be scrubbed
-// by scrolling (see playback). The CPU graph and core grid wiggle on their own timer; their level
+// rewinding shows exactly the same frames. p plays by itself like a short film (~9.5 s, again each
+// time it comes back on screen after finishing) and can be scrubbed by scrolling (see playback). The CPU graph and core grid wiggle on their own timer; their level
 // still follows p. With reduced motion it still plays, but flat: no camera tilt, no depth moves.
 (() => {
   const root = document.getElementById("transform");
@@ -18,7 +18,6 @@
   const coreEls = $$(".xf-cores i");
   const CORE_BASE = [88, 72, 95, 64, 81, 70, 92, 58, 77, 84, 66, 90, 73, 61, 86, 79, 69, 94, 57, 75];
   const caps = $$(".xf-cap");
-  const dots = $$(".xf-dots button");
   const steps = $$(".xf-steps li");
   const rows = $$(".xf-p");
   const bgRows = rows.filter((r) => r.dataset.p === "bg");
@@ -166,10 +165,6 @@
     const cap = p < 0.2 ? 0 : p < 0.42 ? 1 : p < 0.76 ? 2 : 3;
     if (cap !== lastCap) {
       caps.forEach((el, i) => el.classList.toggle("on", i === cap));
-      dots.forEach((el, i) => {
-        el.classList.toggle("on", i === cap);
-        el.setAttribute("aria-current", i === cap ? "step" : "false");
-      });
       lastCap = cap;
     }
 
@@ -336,15 +331,15 @@
   // plays by itself (~15 s). Scrolling inside the pinned part moves the playhead by the same amount
   // (down = forward, up = rewind) and holds autoplay while you scroll; leaving the bottom finishes
   // the film. A light smoothing makes wheel notches glide.
-  const DUR = 15000;
-  const BEATS = [0, 0.2, 0.42, 0.76, 1]; // where each caption starts (same as render's caption switch)
-  const btn = $(".xf-play");
+  const DUR = 9500;
   const track = $(".xf-track");
   let goal = 0; // where the playhead is heading
   let shown = 0; // what's on screen (eases toward goal)
   let playing = false;
   let autoPaused = false;
   let started = false;
+  let leftAfterEnd = false;
+  let finished = false; // reached the end at least once since the last (re)play
   let last = 0;
   let raf = 0;
   let scrollHold = 0;
@@ -355,21 +350,20 @@
   let prevScroll = scrollP();
   const paint = () => {
     render(shown);
-    dots.forEach((d, i) => d.style.setProperty("--fill", range(shown, BEATS[i], BEATS[i + 1]).toFixed(3)));
-    const state = playing ? "playing" : goal >= 1 ? "done" : "paused";
-    if (root.dataset.state !== state) {
-      root.dataset.state = state;
-      btn.setAttribute("aria-label", btn.dataset[playing ? "pause" : goal >= 1 ? "replay" : "play"]);
-    }
+    root.dataset.state = playing ? "playing" : goal >= 1 ? "done" : "paused";
   };
   const loop = (now) => {
     if (playing && now > scrollHold) goal = Math.min(1, goal + (now - last) / DUR);
     last = now;
-    if (goal >= 1 && playing) playing = false;
+    if (goal >= 1) {
+      playing = false;
+      finished = true;
+    }
     shown += (goal - shown) * (reduce ? 1 : 0.16);
     if (Math.abs(goal - shown) < 0.0003) shown = goal;
     paint();
     raf = playing || shown !== goal ? requestAnimationFrame(loop) : 0;
+    root.classList.toggle("moving", !!raf);
   };
   const kick = () => {
     if (!raf) {
@@ -378,7 +372,8 @@
     }
   };
   const play = () => {
-    if (goal >= 1) goal = shown = 0;
+    if (goal >= 1 || finished) goal = shown = 0;
+    finished = false;
     playing = true;
     autoPaused = false;
     kick();
@@ -390,13 +385,6 @@
     autoPaused = !!auto;
     paint();
   };
-  btn.addEventListener("click", () => (playing ? pause() : play()));
-  dots.forEach((d, i) =>
-    d.addEventListener("click", () => {
-      goal = shown = BEATS[i];
-      play();
-    })
-  );
   addEventListener(
     "scroll",
     () => {
@@ -419,6 +407,13 @@
     fit();
     paint();
   });
+  // for the QA frame tools (tools/xform-frames.cjs): jump to an exact moment and hold it
+  root.xfSeek = (v) => {
+    playing = false;
+    started = true;
+    goal = shown = clamp(v);
+    paint();
+  };
   // arriving from a link below (or a reload further down) shows the finished state, not the start
   if (scrollP() >= 0.999) goal = shown = 1;
   paint();
@@ -436,7 +431,12 @@
           started = true;
           if (goal < 1) setTimeout(() => visible() && play(), 300);
         } else if (autoPaused) play();
-      } else if (!on) pause(true);
+        else if (leftAfterEnd) setTimeout(() => visible() && play(), 300);
+        leftAfterEnd = false;
+      } else if (!on) {
+        if (finished) leftAfterEnd = true;
+        pause(true);
+      }
     },
     { threshold: [0, 0.5] }
   ).observe(stage);
