@@ -29,13 +29,22 @@
     "nav.faq": "שאלות",
     "nav.download": "הורדה ל-Windows",
     "nav.menu": "תפריט",
-    "hero.l1": "הביצועים שלך.",
-    "hero.l2": "בשליטה שלך.",
+    "hero.l1": "Windows מכוון ל‑Fortnite.",
+    "hero.l2": "וכל שינוי ניתן לביטול.",
     "hero.sub": "FishyTweaks מכין את Windows ל-Fortnite, מראה מה מגביל את ה-FPS שלך, ומחזיר כל שינוי כשתבקש. אפליקציה אחת, בלי שום דבר מוסתר.",
     "cta.download": "הורדה ל-Windows",
     "hero.explore": "לכל היכולות",
     "facts.free": "חינם",
     "facts.win": "Windows 10 ו-11, ‏64 ביט",
+    "facts.dl": "הורדות",
+    "help.btn": "עזרה",
+    "help.title": "צריכים עזרה?",
+    "help.discord": "שאלו בדיסקורד",
+    "help.discord.s": "תשובה מהקהילה ומהמפתח",
+    "help.support": "עמוד התמיכה",
+    "help.support.s": "בעיות נפוצות ופתרונות",
+    "help.faq": "שאלות נפוצות",
+    "help.faq.s": "באנים, FPS, ביטול שינויים",
     "shot.open": "פתיחת צילום המסך בגודל מלא",
     "shot.tap": "הקישו על צילום מסך כדי לראות אותו בגודל מלא.",
     "shot.note": "הממשק של FishyTweaks 0.9 באנגלית (האפליקציה זמינה גם בעברית). המספרים בצילומי המסך הם נתוני דוגמה.",
@@ -77,6 +86,12 @@
     "fd.p3": "ממצאים מדורגים",
     "fd.p3d": "כל ממצא אומר מי מתקן אותו: FishyTweaks, אתה, או שדרוג חומרה.",
     "tabs.label": "כלים נוספים",
+    "sc.label": "מסכי האפליקציה",
+    "sc.dashboard": "לוח בקרה",
+    "sc.tweaks": "טוויקים למחשב",
+    "sc.recovery": "שחזור",
+    "alt.recovery": "שחזור: כל שינוי ש-FishyTweaks עשה כרגע, כל אחד עם המקור השמור וכפתור ביטול.",
+    "alt.tweaks": "טוויקים למחשב: כל טוויק עם למה לצפות ממנו, המחיר שלו, ומתג ששומר קודם את הערך הישן.",
     "pf.k": "ביצועים",
     "pf.h": "כל סשן, עם ה-FPS שבאמת נמדד.",
     "pf.p": "מצב משחק שומר כל משחק: אורך, FPS ממוצע ו-1% low. המגמות משוות רק סשנים עם אותן הגדרות Fortnite, כך שהחלפת פריסט לא יכולה לזייף שיפור.",
@@ -109,7 +124,7 @@
     "tr.r1": "Smart Tune וטוויקים למחשב",
     "tr.r1s": "קבוע עד שמבטלים",
     "tr.r1a": "ערכי רישום, סוגי הפעלה של שירותים, משימות מתוזמנות, תוכניות הפעלה והגדרות תוכנית חשמל — רק מה שאישרת.",
-    "tr.r1c": "הערך הקודם המדויק נשמר קודם, כולל ערכים שלא היו קיימים. מבטלים טוויק אחד או את כולם מההיסטוריה. נקודת שחזור של המערכת נוצרת לפני כל הרצה.",
+    "tr.r1c": "הערך הקודם המדויק נשמר קודם, כולל ערכים שלא היו קיימים. עמוד השחזור מציג כל שינוי פעיל; מבטלים טוויק אחד, תחום אחד או הכל. נקודת שחזור של המערכת נוצרת לפני כל הרצה של Smart Tune.",
     "tr.r2": "מצב משחק",
     "tr.r2s": "זמני, לסשן אחד",
     "tr.r2a": "עדיפות של אפליקציות רקע, מצב צריכת החשמל של Windows, טיימר המערכת של 1ms, וזיכרון המתנה כשהזיכרון הפנוי נמוך.",
@@ -334,6 +349,61 @@
       })
       .catch(() => {});
 
+  // ---------- real download count (all releases, installers only) ----------
+  // Shown only from 500 up: a tiny real number reads worse than none, and a made-up one is not an option.
+  if ($("[data-dlcount]"))
+    fetch(`https://api.github.com/repos/${REPO}/releases?per_page=100`, { headers: { Accept: "application/vnd.github+json" } })
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((rels) => {
+        const n = rels.reduce((a, rel) => a + rel.assets.filter((x) => /\.(exe|msi)$/i.test(x.name)).reduce((b, x) => b + x.download_count, 0), 0);
+        if (n < 500) return;
+        $$("[data-dln]").forEach((el) => (el.textContent = n.toLocaleString(lang === "he" ? "he-IL" : "en-US")));
+        $$("[data-dlcount]").forEach((el) => (el.hidden = false));
+      })
+      .catch(() => {});
+
+  // ---------- help button: Discord, support page, FAQ ----------
+  (() => {
+    const wrap = document.createElement("div");
+    wrap.className = "help";
+    wrap.innerHTML = `
+      <div class="help-panel" id="help-panel" role="dialog" aria-labelledby="help-title" hidden>
+        <b id="help-title" data-i18n="help.title">Need help?</b>
+        <a href="#" data-discord-link target="_blank" rel="noopener" hidden><span data-i18n="help.discord">Ask on Discord</span><small data-i18n="help.discord.s">Answers from the community and the developer</small></a>
+        <a href="support.html"><span data-i18n="help.support">Support page</span><small data-i18n="help.support.s">Common problems and fixes</small></a>
+        <a href="index.html#faq"><span data-i18n="help.faq">FAQ</span><small data-i18n="help.faq.s">Bans, FPS, undoing changes</small></a>
+      </div>
+      <button class="help-btn" type="button" aria-expanded="false" aria-controls="help-panel">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>
+        <span data-i18n="help.btn">Help</span>
+      </button>`;
+    document.body.append(wrap);
+    $$("[data-i18n]", wrap).forEach((el) => {
+      if (EN[el.dataset.i18n] == null) EN[el.dataset.i18n] = el.innerHTML;
+    });
+    render();
+    const btn = $(".help-btn", wrap);
+    const panel = $(".help-panel", wrap);
+    const set = (open) => {
+      btn.setAttribute("aria-expanded", String(open));
+      panel.hidden = !open;
+      if (open) $("a:not([hidden])", panel).focus({ preventScroll: true });
+    };
+    btn.addEventListener("click", () => set(panel.hidden));
+    addEventListener("keydown", (e) => e.key === "Escape" && !panel.hidden && (set(false), btn.focus()));
+    addEventListener("click", (e) => !wrap.contains(e.target) && !panel.hidden && set(false));
+    fetch("links.json?t=" + Math.floor(Date.now() / 300000))
+      .then((r) => (r.ok ? r.json() : {}))
+      .then((l) => {
+        const a = $("[data-discord-link]", wrap);
+        if (l.discord && a) {
+          a.href = l.discord;
+          a.hidden = false;
+        }
+      })
+      .catch(() => {});
+  })();
+
   // ---------- nav ----------
   const nav = $("#nav");
   if (nav) {
@@ -421,22 +491,78 @@
     feat.addEventListener("focusout", (e) => !feat.contains(e.relatedTarget) && show(null));
   });
 
+  // ---------- hero showcase: one window, six real screens ----------
+  // Images other than the first load on first hover/focus of the bar, so the hero stays one request.
+  $$("[data-showcase]").forEach((box) => {
+    const tabs = $$(".sc-tab", box);
+    const win = $(".window", box);
+    const imgs = $$(".sc-img", box);
+    const load = (img) => {
+      if (!img.dataset.src) return;
+      const s = img.dataset.src;
+      img.srcset = `${s} 1440w, ${s.replace(".webp", "@2x.webp")} 2880w`;
+      img.sizes = "(min-width: 1360px) 1200px, 94vw";
+      img.src = s;
+      delete img.dataset.src;
+    };
+    const warm = () => imgs.forEach(load);
+    box.addEventListener("pointerenter", warm, { once: true });
+    box.addEventListener("focusin", warm, { once: true });
+    const select = (tab, focus) => {
+      const id = tab.dataset.sc;
+      tabs.forEach((x) => {
+        const on = x === tab;
+        x.setAttribute("aria-selected", String(on));
+        x.tabIndex = on ? 0 : -1;
+      });
+      imgs.forEach((img) => {
+        const on = img.dataset.shot === id;
+        if (on) load(img);
+        img.classList.toggle("on", on);
+      });
+      const [fx, fy, fw, fh] = tab.dataset.focusSc.split(",").map(Number);
+      win.style.setProperty("--fx", fx);
+      win.style.setProperty("--fy", fy);
+      win.style.setProperty("--fw", fw);
+      win.style.setProperty("--fh", fh);
+      win.style.setProperty("--ar", (fw * 1440) / (fh * 900));
+      const zoom = $(".zoom", win);
+      if (zoom) zoom.href = `assets/screens/${id}@2x.webp`;
+      const bar = tab.parentElement;
+      if (bar.scrollWidth > bar.clientWidth) {
+        const r = tab.getBoundingClientRect(), b = bar.getBoundingClientRect();
+        bar.scrollBy({ left: r.left + r.width / 2 - (b.left + b.width / 2), behavior: reduce ? "auto" : "smooth" });
+      }
+      if (focus) tab.focus();
+    };
+    tabs.forEach((tab, i) => {
+      tab.addEventListener("click", () => select(tab));
+      tab.addEventListener("keydown", (e) => {
+        const dir = document.documentElement.dir === "rtl" ? -1 : 1;
+        const step = e.key === "ArrowRight" ? dir : e.key === "ArrowLeft" ? -dir : 0;
+        if (!step) return;
+        e.preventDefault();
+        select(tabs[(i + step + tabs.length) % tabs.length], true);
+      });
+    });
+  });
+
   // ---------- screenshots: phone focus region + open full size ----------
   $$("[data-focus]").forEach((fig) => {
     const [fx, fy, fw, fh] = fig.dataset.focus.split(",").map(Number);
     fig.style.cssText += `--fx:${fx};--fy:${fy};--fw:${fw};--fh:${fh};--ar:${(fw * 1440) / (fh * 900)}`;
     fig.style.position = "relative";
     fig.style.overflow = "hidden";
-    const img = $("img", fig);
+    const imgs = $$("img", fig);
     const a = document.createElement("a");
     a.className = "zoom";
-    a.href = img.getAttribute("src").replace(".webp", "@2x.webp");
+    a.href = imgs[0].getAttribute("src").replace(".webp", "@2x.webp");
     a.target = "_blank";
     a.rel = "noopener";
     a.dataset.i18nAttr = "aria-label:shot.open";
     a.setAttribute("aria-label", t("shot.open"));
-    img.replaceWith(a);
-    a.append(img);
+    imgs[0].before(a);
+    a.append(...imgs);
   });
 
   // ---------- tabs ----------

@@ -35,12 +35,13 @@
     </script>
   </head>
   <body data-page="home">
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="ft-grad" x1="720" y1="68" x2="90" y2="720" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2A7FF8"/><stop offset=".45" stop-color="#2F8EFD"/><stop offset="1" stop-color="#36C6FB"/></linearGradient></defs></svg>
     <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
 
     <header class="nav" id="nav">
       <div class="wrap">
         <a class="brand" href="./" aria-label="FishyTweaks home">
-          <span class="mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill-rule="evenodd" d="M2.5 16C7 8.2 15.6 7.6 21.2 16 15.6 24.4 7 23.8 2.5 16Zm7.4-3.4a1.9 1.9 0 1 0 0 3.8 1.9 1.9 0 0 0 0-3.8Z"/><path d="M22.6 16 29.6 9.4 27.4 16l2.2 6.6Z"/></svg></span>
+          <span class="mark"><svg viewBox="70 58 668 682" aria-hidden="true"><path d="M 90 287 L 244 287 C 256 287 264 269 276 250 C 292 227 310 219 336 219 L 588 219 C 630 218 684 174 720 94 C 727 80 722 68 708 68 L 330 68 C 214 67 134 158 87 264 C 82 278 84 287 90 287 Z"/><path d="M 288 362 C 288 340 302 328 324 328 L 594 328 C 603 328 607 336 603 346 C 580 410 520 472 440 474 L 335 476 C 316 476 302 481 294 489 C 290 493 288 490 288 484 Z"/><path d="M 80 376 C 80 352 95 339 118 339 L 204 339 C 226 339 239 352 239 374 L 239 545 C 239 612 158 688 95 726 C 87 731 80 727 80 719 Z"/></svg></span>
           <span class="brand-name">Fishy<span>Tweaks</span></span>
         </a>
         <nav class="nav-links" aria-label="Main">
@@ -70,8 +71,8 @@
         <div class="wrap">
           <div class="hero-head">
             <h1>
-              <span class="line" data-i18n="hero.l1">Your performance.</span>
-              <span class="line" data-i18n="hero.l2">Under your control.</span>
+              <span class="line" data-i18n="hero.l1">Windows, tuned for Fortnite.</span>
+              <span class="line" data-i18n="hero.l2">Every change undoable.</span>
             </h1>
             <div class="hero-side">
               <p class="lead" data-i18n="hero.sub">FishyTweaks gets Windows ready for Fortnite, shows you what limits your FPS, and puts every change back when you ask. One app, nothing hidden.</p>
@@ -86,12 +87,28 @@
                 <li data-i18n="facts.free">Free</li>
                 <li data-i18n="facts.win">Windows 10 and 11, 64-bit</li>
                 <li class="ltr" data-release hidden><span data-ver></span>&nbsp;·&nbsp;<span data-size></span></li>
+                <li data-dlcount hidden><span data-dln></span>&nbsp;<span data-i18n="facts.dl">downloads</span></li>
               </ul>
             </div>
           </div>
-          <figure class="hero-shot">
-            <div class="window" data-focus="17,7,49,53">
-              <img data-shot="dashboard" src="assets/screens/dashboard.webp" srcset="assets/screens/dashboard.webp 1440w, assets/screens/dashboard@2x.webp 2880w" sizes="(min-width: 1360px) 1200px, 94vw" width="1440" height="900" alt="The FishyTweaks dashboard: Fortnite setup, Game Mode launch button, the last session's FPS and this PC's status." data-i18n-attr="alt:alt.dashboard" fetchpriority="high" />
+          <figure class="hero-shot" data-showcase>
+            <div class="showcase-bar" role="tablist" aria-label="App screens" data-i18n-attr="aria-label:sc.label">
+              <button class="sc-tab" role="tab" type="button" aria-selected="true" data-sc="dashboard" data-focus-sc="17,7,49,53" data-i18n="sc.dashboard">Dashboard</button>
+              <button class="sc-tab" role="tab" type="button" aria-selected="false" tabindex="-1" data-sc="gamemode" data-focus-sc="20,24,47,62" data-i18n="gm.k">Game Mode</button>
+              <button class="sc-tab" role="tab" type="button" aria-selected="false" tabindex="-1" data-sc="tune" data-focus-sc="20,20,48,40" data-i18n="st.k">Smart Tune</button>
+              <button class="sc-tab" role="tab" type="button" aria-selected="false" tabindex="-1" data-sc="doctor" data-focus-sc="19,17,52,26" data-i18n="fd.k">FPS Doctor</button>
+              <button class="sc-tab" role="tab" type="button" aria-selected="false" tabindex="-1" data-sc="tweaks" data-focus-sc="19,8,52,50" data-i18n="sc.tweaks">PC Tweaks</button>
+              <button class="sc-tab" role="tab" type="button" aria-selected="false" tabindex="-1" data-sc="performance" data-focus-sc="19,18,52,48" data-i18n="pf.k">Performance</button>
+              <button class="sc-tab" role="tab" type="button" aria-selected="false" tabindex="-1" data-sc="recovery" data-focus-sc="19,8,52,58" data-i18n="sc.recovery">Recovery</button>
+            </div>
+            <div class="window" data-focus="17,7,49,53" role="tabpanel">
+              <img class="sc-img on" data-shot="dashboard" src="assets/screens/dashboard.webp" srcset="assets/screens/dashboard.webp 1440w, assets/screens/dashboard@2x.webp 2880w" sizes="(min-width: 1360px) 1200px, 94vw" width="1440" height="900" alt="The FishyTweaks dashboard: Fortnite setup, Game Mode launch button, the last session's FPS and this PC's status." data-i18n-attr="alt:alt.dashboard" fetchpriority="high" />
+              <img class="sc-img" data-shot="gamemode" data-src="assets/screens/gamemode.webp" width="1440" height="900" alt="Game Mode during a Fortnite session: live FPS, frame timing graph and the list of temporary changes." data-i18n-attr="alt:alt.gamemode" />
+              <img class="sc-img" data-shot="tune" data-src="assets/screens/tune.webp" width="1440" height="900" alt="Smart Tune's ready plan: tweaks picked for this PC, grouped by category, with a restore point and undo." data-i18n-attr="alt:alt.tune" />
+              <img class="sc-img" data-shot="doctor" data-src="assets/screens/doctor.webp" width="1440" height="900" alt="FPS Doctor results: health score, a live CPU-limited reading and ranked findings." data-i18n-attr="alt:alt.doctor" />
+              <img class="sc-img" data-shot="tweaks" data-src="assets/screens/tweaks.webp" width="1440" height="900" alt="PC Tweaks: every tweak with what to expect from it, its trade-offs, and a switch that records the old value first." data-i18n-attr="alt:alt.tweaks" />
+              <img class="sc-img" data-shot="performance" data-src="assets/screens/performance.webp" width="1440" height="900" alt="Performance history: sessions, time played and an average FPS graph per session." data-i18n-attr="alt:alt.performance" />
+              <img class="sc-img" data-shot="recovery" data-src="assets/screens/recovery.webp" width="1440" height="900" alt="Recovery: every change FishyTweaks has active right now, each with its saved original and an undo button." data-i18n-attr="alt:alt.recovery" />
             </div>
             <figcaption class="shot-note" data-i18n="shot.note" data-tap="Tap a screenshot to see it full size." data-i18n-attr="data-tap:shot.tap">FishyTweaks 0.9 interface. Numbers in the screenshots are sample data.</figcaption>
           </figure>
@@ -115,10 +132,10 @@
                 <p class="lead" data-i18n="gm.p">Game Mode turns on when Fortnite starts (you can switch that off), applies a short list of temporary changes, and undoes all of them the moment the game closes — even after a crash.</p>
               </div>
               <ul class="points">
-                <li><button class="point" type="button" data-spot="21,26.4,45,20.8"><b data-i18n="gm.p1">Live session</b><span data-i18n="gm.p1d">Current FPS, session length and how many background apps were lowered.</span></button></li>
-                <li><button class="point" type="button" data-spot="20.75,55.6,44.75,29.4"><b data-i18n="gm.p2">Frame timing</b><span data-i18n="gm.p2d">1% lows, slowest frames, CPU and RAM, plus the last two minutes of FPS.</span></button></li>
-                <li><button class="point" type="button" data-spot="68.5,20,29,10.4"><b data-i18n="gm.p3">Changes you can see</b><span data-i18n="gm.p3d">A running count of what's active right now, and a promise of when it goes back.</span></button></li>
-                <li><button class="point" type="button" data-spot="68.5,32.4,29,66"><b data-i18n="gm.p4">You pick the steps</b><span data-i18n="gm.p4d">Lower background apps, pause Wallpaper Engine, best power mode, 1 ms timer. Each is a switch.</span></button></li>
+                <li><button class="point" type="button" data-spot="20.8,23.1,44.4,25.6"><b data-i18n="gm.p1">Live session</b><span data-i18n="gm.p1d">Current FPS, session length and how many background apps were lowered.</span></button></li>
+                <li><button class="point" type="button" data-spot="20.8,51.1,44.4,29"><b data-i18n="gm.p2">Frame timing</b><span data-i18n="gm.p2d">1% lows, slowest frames, CPU and RAM, plus the last two minutes of FPS.</span></button></li>
+                <li><button class="point" type="button" data-spot="68,20.6,29,10.7"><b data-i18n="gm.p3">Changes you can see</b><span data-i18n="gm.p3d">A running count of what's active right now, and a promise of when it goes back.</span></button></li>
+                <li><button class="point" type="button" data-spot="68,33,29,66"><b data-i18n="gm.p4">You pick the steps</b><span data-i18n="gm.p4d">Lower background apps, pause Wallpaper Engine, best power mode, 1 ms timer. Each is a switch.</span></button></li>
               </ul>
             </div>
             <figure class="shot reveal" data-spot-host data-focus="20,24,47,62">
@@ -134,9 +151,9 @@
               <h3 class="h3" data-i18n="st.h">A plan made for this PC, not a tweak pack.</h3>
               <p class="lead" data-i18n="st.p">Smart Tune scans your hardware, asks four questions, and picks from a library of 1,145 documented tweaks. Things you rely on — a Bluetooth controller, Discord voice, OBS — stay on.</p>
               <ul class="points">
-                <li><button class="point" type="button" data-spot="21.25,36.8,74.15,13.6"><b data-i18n="st.p1">See the plan first</b><span data-i18n="st.p1d">How many tweaks it picked, which ones affect input lag, and what it left out on purpose.</span></button></li>
-                <li><button class="point" type="button" data-spot="21.25,52,62,4"><b data-i18n="st.p2">Grouped by area</b><span data-i18n="st.p2d">Network, background apps, scheduled tasks, input and more.</span></button></li>
-                <li><button class="point" type="button" data-spot="21.25,57.2,73.5,10.2"><b data-i18n="st.p3">Safe by default</b><span data-i18n="st.p3d">A restore point first, one admin prompt, and every change can be undone from History.</span></button></li>
+                <li><button class="point" type="button" data-spot="21.3,37.5,74.2,13.7"><b data-i18n="st.p1">See the plan first</b><span data-i18n="st.p1d">How many tweaks it picked, which ones affect input lag, and what it left out on purpose.</span></button></li>
+                <li><button class="point" type="button" data-spot="21.3,53.6,62,3.6"><b data-i18n="st.p2">Grouped by area</b><span data-i18n="st.p2d">Network, background apps, scheduled tasks, input and more.</span></button></li>
+                <li><button class="point" type="button" data-spot="21.3,58.9,74.2,9.8"><b data-i18n="st.p3">Safe by default</b><span data-i18n="st.p3d">A restore point first, one admin prompt, and every change can be undone from History.</span></button></li>
               </ul>
             </div>
             <figure class="shot crop reveal" data-spot-host data-crop="16.5" data-crop-h="80" data-focus="20,20,48,40">
@@ -152,9 +169,9 @@
               <h3 class="h3" data-i18n="fd.h">Find out what is actually holding your FPS back.</h3>
               <p class="lead" data-i18n="fd.p">FPS Doctor checks RAM channels, CPU boost, caps, V-Sync and drivers. With Fortnite running it measures whether the CPU or the graphics card is the limit — then tells you which fixes software can do and which need hardware.</p>
               <ul class="points">
-                <li><button class="point" type="button" data-spot="20,18.4,77.5,23.6"><b data-i18n="fd.p1">A health score with context</b><span data-i18n="fd.p1d">Your CPU, GPU and memory setup, and the fixes it can apply for you.</span></button></li>
-                <li><button class="point" type="button" data-spot="19.25,43.8,78.25,27"><b data-i18n="fd.p2">The real bottleneck</b><span data-i18n="fd.p2d">Live FPS, GPU load and CPU clock, explained in one sentence.</span></button></li>
-                <li><button class="point" type="button" data-spot="19.25,72.6,78.25,27"><b data-i18n="fd.p3">Findings, ranked</b><span data-i18n="fd.p3d">Each one says who fixes it: FishyTweaks, you, or a hardware upgrade.</span></button></li>
+                <li><button class="point" type="button" data-spot="19.1,18.7,77.9,24"><b data-i18n="fd.p1">A health score with context</b><span data-i18n="fd.p1d">Your CPU, GPU and memory setup, and the fixes it can apply for you.</span></button></li>
+                <li><button class="point" type="button" data-spot="19.1,44.3,77.9,27.4"><b data-i18n="fd.p2">The real bottleneck</b><span data-i18n="fd.p2d">Live FPS, GPU load and CPU clock, explained in one sentence.</span></button></li>
+                <li><button class="point" type="button" data-spot="19.1,75,77.9,24.5"><b data-i18n="fd.p3">Findings, ranked</b><span data-i18n="fd.p3d">Each one says who fixes it: FishyTweaks, you, or a hardware upgrade.</span></button></li>
               </ul>
             </div>
             <figure class="shot crop reveal" data-spot-host data-crop="16.5" data-focus="19,17,52,26">
@@ -253,7 +270,7 @@
                   <th scope="row"><span data-i18n="tr.r1">Smart Tune &amp; PC Tweaks</span><small data-i18n="tr.r1s">Permanent until you undo</small></th>
                   <td data-label="What changes" data-i18n-attr="data-label:tr.c2" data-i18n="tr.r1a">Registry values, service start types, scheduled tasks, startup entries and power-plan settings — only the ones you approved.</td>
                   <td data-label="Permission" data-i18n-attr="data-label:tr.c3"><span class="tag user" data-i18n="tag.user">Your user</span> <span class="tag admin" data-i18n="tag.admin1">Admin, once per run</span></td>
-                  <td data-label="How it's undone" data-i18n-attr="data-label:tr.c4" data-i18n="tr.r1c">The exact previous value is saved first, including values that didn't exist. Undo one tweak or all of them from History. A system restore point is made before each run.</td>
+                  <td data-label="How it's undone" data-i18n-attr="data-label:tr.c4" data-i18n="tr.r1c">The exact previous value is saved first, including values that didn't exist. The Recovery page lists every active change; undo one tweak, one area or all of them. A system restore point is made before each Smart Tune run.</td>
                 </tr>
                 <tr>
                   <th scope="row"><span data-i18n="tr.r2">Game Mode</span><small data-i18n="tr.r2s">Temporary, one session</small></th>
@@ -339,7 +356,7 @@
       <!-- final CTA -->
       <section class="section final" id="download">
         <div class="wrap reveal">
-          <div class="mark-lg" aria-hidden="true"><svg viewBox="0 0 32 32"><path fill-rule="evenodd" d="M2.5 16C7 8.2 15.6 7.6 21.2 16 15.6 24.4 7 23.8 2.5 16Zm7.4-3.4a1.9 1.9 0 1 0 0 3.8 1.9 1.9 0 0 0 0-3.8Z"/><path d="M22.6 16 29.6 9.4 27.4 16l2.2 6.6Z"/></svg></div>
+          <div class="mark-lg" aria-hidden="true"><svg viewBox="70 58 668 682" aria-hidden="true"><path d="M 90 287 L 244 287 C 256 287 264 269 276 250 C 292 227 310 219 336 219 L 588 219 C 630 218 684 174 720 94 C 727 80 722 68 708 68 L 330 68 C 214 67 134 158 87 264 C 82 278 84 287 90 287 Z"/><path d="M 288 362 C 288 340 302 328 324 328 L 594 328 C 603 328 607 336 603 346 C 580 410 520 472 440 474 L 335 476 C 316 476 302 481 294 489 C 290 493 288 490 288 484 Z"/><path d="M 80 376 C 80 352 95 339 118 339 L 204 339 C 226 339 239 352 239 374 L 239 545 C 239 612 158 688 95 726 C 87 731 80 727 80 719 Z"/></svg></div>
           <h2 class="h2" data-i18n="end.h">Tune it once. Undo it any time.</h2>
           <p class="lead" data-i18n="end.p">Free for Windows 10 and 11. Installs in seconds and keeps itself up to date.</p>
           <div class="hero-actions">
@@ -364,7 +381,7 @@
         <div class="footer-grid">
           <div>
             <a class="brand" href="./" aria-label="FishyTweaks home">
-              <span class="mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill-rule="evenodd" d="M2.5 16C7 8.2 15.6 7.6 21.2 16 15.6 24.4 7 23.8 2.5 16Zm7.4-3.4a1.9 1.9 0 1 0 0 3.8 1.9 1.9 0 0 0 0-3.8Z"/><path d="M22.6 16 29.6 9.4 27.4 16l2.2 6.6Z"/></svg></span>
+              <span class="mark"><svg viewBox="70 58 668 682" aria-hidden="true"><path d="M 90 287 L 244 287 C 256 287 264 269 276 250 C 292 227 310 219 336 219 L 588 219 C 630 218 684 174 720 94 C 727 80 722 68 708 68 L 330 68 C 214 67 134 158 87 264 C 82 278 84 287 90 287 Z"/><path d="M 288 362 C 288 340 302 328 324 328 L 594 328 C 603 328 607 336 603 346 C 580 410 520 472 440 474 L 335 476 C 316 476 302 481 294 489 C 290 493 288 490 288 484 Z"/><path d="M 80 376 C 80 352 95 339 118 339 L 204 339 C 226 339 239 352 239 374 L 239 545 C 239 612 158 688 95 726 C 87 731 80 727 80 719 Z"/></svg></span>
               <span class="brand-name">Fishy<span>Tweaks</span></span>
             </a>
             <p class="about" data-i18n="foot.about">Transparent, reversible Windows tuning for Fortnite. Made by Fishy.</p>
