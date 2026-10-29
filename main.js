@@ -83,6 +83,20 @@
     "ba.aria": "השוואה בין לפני לבין עם מצב משחק",
     "ba.note": "אפליקציות לדוגמה. מצב משחק מוריד רק אפליקציות שמותר לו; הוא לא נוגע במשחק או באנטי-וירוס, וכל הגדרה חוזרת כשהמשחק נגמר.",
     "end.cap": "מצב משחק ב-FishyTweaks 0.9. המספרים הם נתוני דוגמה.",
+    "xf.play": "הפעלה",
+    "xf.pause": "השהיה",
+    "xf.replay": "הפעלה מחדש",
+    "xf.s1": "שלב 1",
+    "xf.s2": "שלב 2",
+    "xf.s3": "שלב 3",
+    "xf.s4": "שלב 4",
+    "xf.next": "השוו לפני ואחרי",
+    "rc.k": "שחזור",
+    "rc.h": "כל שינוי ברשימה אחת, ולכל אחד ביטול משלו.",
+    "rc.p": "עמוד השחזור מראה כל מה ש-FishyTweaks שינה כרגע: טוויקים למחשב, Smart Tune, תוכנית החשמל, הגדרות Fortnite ו-DNS. כל פריט שומר את הערך שהוא החליף, כך שביטול מחזיר בדיוק את מה שהיה.",
+    "rc.t1": "הערך המקורי השמור לכל שינוי",
+    "rc.t2": "ביטול של פריט אחד, או של הכול בבת אחת",
+    "rc.t3": "נקודת שחזור של Windows לפני שינויים גדולים, אם רוצים",
     "f.h2": "הכול סובב סביב סשן אחד של Fortnite.",
     "f.sub": "מכינים את המחשב לפני המשחק, מודדים מה קורה בזמן המשחק, ומחזירים את Windows למצבו אחרי. כל כלי מראה בדיוק מה הוא עושה.",
     "gm.k": "מצב משחק",
@@ -191,8 +205,6 @@
     a5: "פותחים את ההגדרות באפליקציה ולוחצים <b>בטל הכול</b>. זה מחזיר כל טוויק, את פרופיל הדרייבר של NVIDIA, את תוכנית החשמל המותאמת ואת הגדרות Fortnite, ומראה מה נעשה. בנוסף, Smart Tune יוצר נקודת שחזור של Windows לפני כל הרצה.",
     q6: "איך עובדים העדכונים?",
     a6: "כשהאפליקציה עולה היא בודקת ב-GitHub אם יש גרסה חדשה. אם יש, יופיע באנר עדכון; ההורדה נבדקת לפי חתימה, מותקנת, והאפליקציה מופעלת מחדש תוך כמה שניות. שום דבר אחר לא יורד ברקע.",
-    q7: "היה לי FishLaunch. זו אותה אפליקציה?",
-    a7: "כן. FishLaunch שינתה את שמה ל-FishyTweaks ומתמקדת עכשיו ב-Fortnite. העותק שלך ממשיך להתעדכן מאותו מקום.",
     "end.h": "מכווננים פעם אחת. מבטלים מתי שרוצים.",
     "end.p": "חינם ל-Windows 10 ו-11. מותקן תוך שניות ומתעדכן לבד.",
     "end.changelog": "מה חדש",
@@ -518,6 +530,39 @@
     });
     feat.addEventListener("mouseleave", () => show(null));
     feat.addEventListener("focusout", (e) => !feat.contains(e.relatedTarget) && show(null));
+
+    // The first time the screenshot is properly on screen it plays its own entrance (data-reveal:
+    // activate / scan / evidence), then walks through the points one by one, the same spotlight the
+    // visitor gets on hover. Any hover or focus on the feature hands control back to the visitor.
+    if (reduce || !("IntersectionObserver" in window)) return;
+    let tour = 0;
+    const stop = () => {
+      clearTimeout(tour);
+      tour = -1;
+    };
+    feat.addEventListener("pointerenter", stop);
+    feat.addEventListener("focusin", stop);
+    const io = new IntersectionObserver(
+      ([en]) => {
+        if (!en.isIntersecting) return;
+        io.disconnect();
+        host.classList.add("played");
+        if (tour === -1) return;
+        let i = 0;
+        const next = () => {
+          if (tour === -1) return;
+          if (i >= points.length) {
+            show(null);
+            return;
+          }
+          show(points[i++]);
+          tour = setTimeout(next, 1900);
+        };
+        tour = setTimeout(next, 1300);
+      },
+      { threshold: 0.55 }
+    );
+    io.observe(host);
   });
 
   // ---------- hero showcase: one window, six real screens ----------
@@ -537,18 +582,44 @@
     const warm = () => imgs.forEach(load);
     box.addEventListener("pointerenter", warm, { once: true });
     box.addEventListener("focusin", warm, { once: true });
-    const select = (tab, focus) => {
+    // a sliding indicator under the selected tab, and a spotlight that points at what matters on each screen
+    const bar0 = $(".showcase-bar", box);
+    const ind = document.createElement("span");
+    ind.className = "sc-ind";
+    bar0.prepend(ind);
+    const spot = document.createElement("i");
+    spot.className = "sc-spot";
+    win.append(spot);
+    const placeInd = (tab) => {
+      ind.style.width = `${tab.offsetWidth}px`;
+      ind.style.transform = `translateX(${tab.offsetLeft}px)`;
+    };
+    let cur = tabs.find((x) => x.getAttribute("aria-selected") === "true") || tabs[0];
+    requestAnimationFrame(() => placeInd(cur));
+    addEventListener("resize", () => placeInd(cur));
+    const select = (tab, focus, auto) => {
       const id = tab.dataset.sc;
+      if (!auto) stopTour();
+      const prev = cur;
+      cur = tab;
       tabs.forEach((x) => {
         const on = x === tab;
         x.setAttribute("aria-selected", String(on));
         x.tabIndex = on ? 0 : -1;
       });
+      placeInd(tab);
+      // the new screen wipes in over the old one, which settles back; then the spotlight lands
       imgs.forEach((img) => {
         const on = img.dataset.shot === id;
         if (on) load(img);
+        img.classList.toggle("was", img.dataset.shot === prev.dataset.sc && prev !== tab);
         img.classList.toggle("on", on);
       });
+      if (prev !== tab && !reduce) {
+        win.classList.remove("spotting");
+        void win.offsetWidth;
+        win.classList.add("spotting");
+      }
       const [fx, fy, fw, fh] = tab.dataset.focusSc.split(",").map(Number);
       win.style.setProperty("--fx", fx);
       win.style.setProperty("--fy", fy);
@@ -574,6 +645,31 @@
         select(tabs[(i + step + tabs.length) % tabs.length], true);
       });
     });
+    // a short self-running tour of the screens while the hero is in view, until the visitor
+    // touches the showcase; the images load once the tour starts, not with the page
+    let tour = 0;
+    function stopTour() {
+      clearInterval(tour);
+      tour = -1;
+    }
+    if (!reduce && "IntersectionObserver" in window) {
+      ["pointerdown", "keydown", "wheel"].forEach((ev) => box.addEventListener(ev, stopTour, { passive: true }));
+      new IntersectionObserver(([en]) => {
+        if (tour === -1) return;
+        clearInterval(tour);
+        tour = 0;
+        if (!en.isIntersecting) return;
+        setTimeout(() => {
+          if (tour !== 0) return;
+          warm();
+          tour = setInterval(() => {
+            const next = tabs[(tabs.indexOf(cur) + 1) % tabs.length];
+            if (document.hidden) return;
+            select(next, false, true);
+          }, 4200);
+        }, 2600);
+      }, { threshold: 0.45 }).observe(win);
+    }
   });
 
   // ---------- screenshots: phone focus region + open full size ----------

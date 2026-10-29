@@ -36,7 +36,7 @@
     </script>
   </head>
   <body data-page="home">
-    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="ft-grad" x1="720" y1="68" x2="90" y2="720" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2A7FF8"/><stop offset=".45" stop-color="#2F8EFD"/><stop offset="1" stop-color="#36C6FB"/></linearGradient></defs></svg>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="ft-grad" x1="720" y1="68" x2="90" y2="720" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2A7FF8"/><stop offset=".45" stop-color="#2F8EFD"/><stop offset="1" stop-color="#36C6FB"/></linearGradient><g id="ft-mark"><path d="M 90 287 L 244 287 C 256 287 264 269 276 250 C 292 227 310 219 336 219 L 588 219 C 630 218 684 174 720 94 C 727 80 722 68 708 68 L 330 68 C 214 67 134 158 87 264 C 82 278 84 287 90 287 Z"/><path d="M 288 362 C 288 340 302 328 324 328 L 594 328 C 603 328 607 336 603 346 C 580 410 520 472 440 474 L 335 476 C 316 476 302 481 294 489 C 290 493 288 490 288 484 Z"/><path d="M 80 376 C 80 352 95 339 118 339 L 204 339 C 226 339 239 352 239 374 L 239 545 C 239 612 158 688 95 726 C 87 731 80 727 80 719 Z"/></g></defs></svg>
     <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
 
     <header class="nav" id="nav">
@@ -140,9 +140,22 @@
                 <li class="xf-cap" data-cap="3">
                   <b data-i18n="xf.c4">The match gets the PC. Windows gets it back after.</b>
                   <span data-i18n="xf.c4s">Your antivirus and the game itself are never touched. When the match ends, every change is put back.</span>
+                  <a class="link xf-next" href="#compare"><span data-i18n="xf.next">Compare before and after</span><svg class="arrow" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 3v10M4 9l4 4 4-4" /></svg></a>
                 </li>
               </ol>
-              <div class="xf-dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
+              <div class="xf-ctrl">
+                <button class="xf-play" type="button" aria-label="Play" data-play="Play" data-pause="Pause" data-replay="Replay" data-i18n-attr="data-play:xf.play;data-pause:xf.pause;data-replay:xf.replay">
+                  <svg class="i-pause" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><rect x="3.5" y="2.5" width="3" height="11" rx="1" /><rect x="9.5" y="2.5" width="3" height="11" rx="1" /></svg>
+                  <svg class="i-play" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4.5 2.8v10.4a.8.8 0 0 0 1.2.7l8.3-5.2a.8.8 0 0 0 0-1.4L5.7 2.1a.8.8 0 0 0-1.2.7z" /></svg>
+                  <svg class="i-replay" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 1 0 1.7-4" /><path d="M2.5 2.5V6H6" /></svg>
+                </button>
+                <div class="xf-dots">
+                  <button type="button" class="on" aria-label="Step 1" data-i18n-attr="aria-label:xf.s1"></button>
+                  <button type="button" aria-label="Step 2" data-i18n-attr="aria-label:xf.s2"></button>
+                  <button type="button" aria-label="Step 3" data-i18n-attr="aria-label:xf.s3"></button>
+                  <button type="button" aria-label="Step 4" data-i18n-attr="aria-label:xf.s4"></button>
+                </div>
+              </div>
               <p class="fine xf-note" data-i18n="xf.note">Illustration. The apps and numbers in this scene are an example, not a measurement of your PC.</p>
             </div>
 
@@ -154,6 +167,7 @@
                     <div class="xf-screen">
                       <div class="xf-wall"></div>
                       <div class="xf-shade"></div>
+                      <div class="xf-glass"></div>
                       <!-- taskbar -->
                       <div class="xf-taskbar">
                         <div class="xf-tbi">
@@ -203,21 +217,28 @@
                       <div class="xf-tm-body">
                         <div class="xf-perf">
                           <div class="xf-perf-head"><b>CPU</b><span class="xf-cpu-n">78%</span><small>Utilization · 60 seconds</small></div>
-                          <canvas class="xf-graph" width="440" height="120"></canvas>
+                          <div class="xf-cores"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                          <canvas class="xf-graph" width="440" height="96"></canvas>
                           <div class="xf-mem"><span>Memory</span><div><i class="xf-mem-bar"></i></div><b class="xf-mem-n">12.4 / 16 GB</b></div>
                         </div>
                         <div class="xf-procs">
-                          <div class="xf-ph"><span>Name</span><span>Status</span><span>CPU</span><span>Memory</span></div>
-                          <div class="xf-p game" data-p="game"><span><i class="ic" style="background:#3b82f6"></i>Fortnite</span><em class="st">Untouched</em><span class="cpu">31%</span><span>3,912 MB</span></div>
-                          <div class="xf-p" data-p="bg"><span><i class="ic" style="background:#f59e0b"></i>Google Chrome (24)</span><em class="st"></em><span class="cpu" data-a="14" data-b="2">14%</span><span>2,846 MB</span></div>
-                          <div class="xf-p" data-p="bg"><span><i class="ic" style="background:#6366f1"></i>Discord (6)</span><em class="st"></em><span class="cpu" data-a="7" data-b="1">7%</span><span>612 MB</span></div>
-                          <div class="xf-p" data-p="pause"><span><i class="ic" style="background:#06b6d4"></i>Wallpaper Engine</span><em class="st"></em><span class="cpu" data-a="9" data-b="0">9%</span><span>488 MB</span></div>
-                          <div class="xf-p" data-p="bg"><span><i class="ic" style="background:#22c55e"></i>Spotify</span><em class="st"></em><span class="cpu" data-a="5" data-b="1">5%</span><span>395 MB</span></div>
-                          <div class="xf-p" data-p="bg"><span><i class="ic" style="background:#0ea5e9"></i>OneDrive</span><em class="st"></em><span class="cpu" data-a="4" data-b="0">4%</span><span>141 MB</span></div>
-                          <div class="xf-p" data-p="bg"><span><i class="ic" style="background:#64748b"></i>Steam Client WebHelper (8)</span><em class="st"></em><span class="cpu" data-a="6" data-b="1">6%</span><span>721 MB</span></div>
-                          <div class="xf-p sys" data-p="sys"><span><i class="ic" style="background:#94a3b8"></i>Antimalware Service</span><em class="st">Untouched</em><span class="cpu">2%</span><span>214 MB</span></div>
+                          <div class="xf-ph"><span>Name</span><span>Status</span><span>CPU</span></div>
+                          <div class="xf-p game" data-p="game"><span><i class="ic" style="background:#3b82f6"></i>Fortnite</span><em class="st">Untouched</em><span class="cpu">31%</span></div>
+                          <div class="xf-p" data-p="bg"><span><i class="ic" style="background:#f59e0b"></i>Google Chrome (24)</span><em class="st"></em><span class="cpu" data-a="14" data-b="2">14%</span></div>
+                          <div class="xf-p" data-p="bg"><span><i class="ic" style="background:#6366f1"></i>Discord (6)</span><em class="st"></em><span class="cpu" data-a="7" data-b="1">7%</span></div>
+                          <div class="xf-p" data-p="pause"><span><i class="ic" style="background:#06b6d4"></i>Wallpaper Engine</span><em class="st"></em><span class="cpu" data-a="9" data-b="0">9%</span></div>
+                          <div class="xf-p" data-p="bg"><span><i class="ic" style="background:#22c55e"></i>Spotify</span><em class="st"></em><span class="cpu" data-a="5" data-b="1">5%</span></div>
+                          <div class="xf-p" data-p="bg"><span><i class="ic" style="background:#0ea5e9"></i>OneDrive</span><em class="st"></em><span class="cpu" data-a="4" data-b="0">4%</span></div>
+                          <div class="xf-p" data-p="bg"><span><i class="ic" style="background:#64748b"></i>Steam Client WebHelper (8)</span><em class="st"></em><span class="cpu" data-a="6" data-b="1">6%</span></div>
+                          <div class="xf-p sys" data-p="sys"><span><i class="ic" style="background:#94a3b8"></i>Antimalware Service</span><em class="st">Untouched</em><span class="cpu">2%</span></div>
                         </div>
                       </div>
+                    </div>
+
+                    <!-- Windows quick settings: Game Mode switches the power mode -->
+                    <div class="xf-win xf-qs" data-k="qs">
+                      <div class="xf-qs-h"><small>Power mode</small><b class="xf-qs-by">Set by FishyTweaks</b></div>
+                      <div class="xf-qs-seg"><span>Best power efficiency</span><span class="on">Balanced</span><span>Best performance</span></div>
                     </div>
 
                     <!-- FishyTweaks Game Mode (rebuilt from the app's own Game Mode screen) -->
@@ -260,35 +281,79 @@
           </div>
           <div class="ba-box reveal" dir="ltr" style="--ba: 50">
             <div class="ba-pane before" aria-hidden="true">
-              <div class="ba-scene"></div>
-              <ul class="ba-procs">
-                <li><i style="background:#f59e0b"></i>Google Chrome (24)<em>Normal</em></li>
-                <li><i style="background:#6366f1"></i>Discord (6)<em>Normal</em></li>
-                <li><i style="background:#06b6d4"></i>Wallpaper Engine<em>Running</em></li>
-                <li><i style="background:#22c55e"></i>Spotify<em>Normal</em></li>
-                <li><i style="background:#64748b"></i>Steam Client WebHelper (8)<em>Normal</em></li>
-              </ul>
-              <div class="ba-stats">
-                <div><small data-i18n="ba.power">Power mode</small><b data-i18n="ba.power.a">Balanced</b></div>
-                <div><small data-i18n="ba.timer">System timer</small><b class="ltr">15.6 ms</b></div>
-                <div><small data-i18n="ba.bg">Background apps</small><b data-i18n="ba.bg.a">Normal priority</b></div>
-                <div><small>Wallpaper Engine</small><b data-i18n="ba.we.a">Running</b></div>
+              <div class="ba-desk">
+                <div class="xf-win ba-tm">
+                  <div class="xf-tb"><b>Task Manager</b><em class="xf-tag">Simulation</em><div class="xf-ctl"><i></i><i></i><i></i></div></div>
+                  <div class="ba-tm-body">
+                    <div class="ba-cpu"><div><b>CPU</b><span class="ba-cpu-n">78%</span></div><div class="ba-cores"><i style="--u:88"></i><i style="--u:72"></i><i style="--u:95"></i><i style="--u:64"></i><i style="--u:81"></i><i style="--u:70"></i><i style="--u:92"></i><i style="--u:58"></i><i style="--u:77"></i><i style="--u:84"></i><i style="--u:66"></i><i style="--u:90"></i><i style="--u:73"></i><i style="--u:61"></i><i style="--u:86"></i><i style="--u:79"></i><i style="--u:69"></i><i style="--u:94"></i><i style="--u:57"></i><i style="--u:75"></i></div></div>
+                    <div class="xf-ph"><span>Name</span><span>Status</span><span>CPU</span></div>
+                    <div class="xf-p game"><span><i class="ic" style="background:#3b82f6"></i>Fortnite</span><em class="st">Untouched</em><span class="cpu"><i style="--w:93%"></i>31%</span></div><div class="xf-p  hot"><span><i class="ic" style="background:#f59e0b"></i>Google Chrome (24)</span><em class="st">Normal</em><span class="cpu"><i style="--w:42%"></i>14%</span></div><div class="xf-p  hot"><span><i class="ic" style="background:#6366f1"></i>Discord (6)</span><em class="st">Normal</em><span class="cpu"><i style="--w:21%"></i>7%</span></div><div class="xf-p  hot"><span><i class="ic" style="background:#06b6d4"></i>Wallpaper Engine</span><em class="st">Running</em><span class="cpu"><i style="--w:27%"></i>9%</span></div><div class="xf-p  hot"><span><i class="ic" style="background:#22c55e"></i>Spotify</span><em class="st">Normal</em><span class="cpu"><i style="--w:15%"></i>5%</span></div><div class="xf-p  hot"><span><i class="ic" style="background:#64748b"></i>Steam Client WebHelper (8)</span><em class="st">Normal</em><span class="cpu"><i style="--w:18%"></i>6%</span></div><div class="xf-p sys"><span><i class="ic" style="background:#94a3b8"></i>Antimalware Service</span><em class="st">Untouched</em><span class="cpu"><i style="--w:6%"></i>2%</span></div>
+                  </div>
+                </div>
+                <div class="xf-win ba-ft">
+                  <div class="xf-tb"><b class="xf-ft-brand"><svg viewBox="70 58 668 682"><use href="#ft-mark" /></svg>FishyTweaks</b><div class="xf-ctl"><i></i><i></i><i></i></div></div>
+                  <div class="xf-ft-body">
+                    <div class="xf-ft-head">
+                      <div class="xf-ring"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" /><circle class="xf-ring-p" cx="22" cy="22" r="19" pathLength="1" style="--xf-ring:1" /></svg><span class="xf-ring-n">0/7</span></div>
+                      <div><b class="xf-ft-title">Game Mode</b><small class="xf-ft-sub">Armed · waits for Fortnite</small></div>
+                      <em class="ba-state ">Off</em>
+                    </div>
+                    <ol class="xf-steps"><li class=""><i></i>Check the PC and Fortnite</li><li class=""><i></i>Pause Wallpaper Engine</li><li class=""><i></i>Lower background apps</li><li class=""><i></i>Windows power mode: Best performance</li><li class=""><i></i>Hold the 1 ms timer</li><li class=""><i></i>Free memory if it's low</li><li class=""><i></i>Read every change back to verify it</li></ol>
+                    <div class="xf-ft-foot" style="--xf-foot:0"><span class="xf-ok">Verified · 7 of 7 changes in place</span><em>Undone when the match ends</em></div>
+                  </div>
+                </div>
+                <div class="ba-facts">
+                  <div class="ba-fact"><small>System timer</small><b class="ltr">15.6 ms</b><b class="ba-chg ghost">Changed by FishyTweaks</b></div>
+                  <div class="ba-fact"><small>Wallpaper Engine</small><b>Running</b><b class="ba-chg ghost">Changed by FishyTweaks</b></div>
+                  <div class="ba-fact"><small>Background apps</small><b>Normal priority</b><b class="ba-chg ghost">Changed by FishyTweaks</b></div>
+                  <div class="ba-fact"><small>Antivirus</small><b>On</b><b class="ba-same">Never touched</b></div>
+                </div>
+                <div class="xf-win ba-qs">
+                  <div class="ba-qs-h"><small>Power mode</small><b class="ba-chg ghost">Changed by FishyTweaks</b></div>
+                  <div class="ba-seg"><span class="">Best power efficiency</span><span class="on">Balanced</span><span class="">Best performance</span></div>
+                </div>
+                <div class="xf-taskbar ba-taskbar">
+                  <div class="xf-tbi"><i class="start"><b></b><b></b><b></b><b></b></i><i class="search"><span>Search</span></i><i style="--c:#f6c544"></i><i style="--c:#f59e0b"></i><i style="--c:#6366f1"></i><i style="--c:#22c55e"></i><i class="ft"><img src="favicon.svg?v=2" alt="" /></i></div>
+                  <div class="xf-tray"><span>ENG</span><span class="xf-clock">21:04<br />29/10/2026</span></div>
+                </div>
               </div>
             </div>
             <div class="ba-pane after" aria-hidden="true">
-              <div class="ba-scene"></div>
-              <ul class="ba-procs">
-                <li><i style="background:#f59e0b"></i>Google Chrome (24)<em class="eff">Efficiency mode</em></li>
-                <li><i style="background:#6366f1"></i>Discord (6)<em class="eff">Efficiency mode</em></li>
-                <li><i style="background:#06b6d4"></i>Wallpaper Engine<em class="pause">Paused</em></li>
-                <li><i style="background:#22c55e"></i>Spotify<em class="eff">Efficiency mode</em></li>
-                <li><i style="background:#64748b"></i>Steam Client WebHelper (8)<em class="eff">Efficiency mode</em></li>
-              </ul>
-              <div class="ba-stats">
-                <div><small data-i18n="ba.power">Power mode</small><b data-i18n="ba.power.b">Best performance</b></div>
-                <div><small data-i18n="ba.timer">System timer</small><b class="ltr">1.0 ms</b></div>
-                <div><small data-i18n="ba.bg">Background apps</small><b data-i18n="ba.bg.b">Efficiency mode</b></div>
-                <div><small>Wallpaper Engine</small><b data-i18n="ba.we.b">Paused</b></div>
+              <div class="ba-desk">
+                <div class="xf-win ba-tm">
+                  <div class="xf-tb"><b>Task Manager</b><em class="xf-tag">Simulation</em><div class="xf-ctl"><i></i><i></i><i></i></div></div>
+                  <div class="ba-tm-body">
+                    <div class="ba-cpu"><div><b>CPU</b><span class="ba-cpu-n">38%</span></div><div class="ba-cores"><i style="--u:31"></i><i style="--u:28"></i><i style="--u:42"></i><i style="--u:21"></i><i style="--u:32"></i><i style="--u:31"></i><i style="--u:33"></i><i style="--u:22"></i><i style="--u:34"></i><i style="--u:29"></i><i style="--u:26"></i><i style="--u:40"></i><i style="--u:25"></i><i style="--u:24"></i><i style="--u:38"></i><i style="--u:27"></i><i style="--u:27"></i><i style="--u:41"></i><i style="--u:18"></i><i style="--u:30"></i></div></div>
+                    <div class="xf-ph"><span>Name</span><span>Status</span><span>CPU</span></div>
+                    <div class="xf-p game"><span><i class="ic" style="background:#3b82f6"></i>Fortnite</span><em class="st">Untouched</em><span class="cpu"><i style="--w:93%"></i>31%</span></div><div class="xf-p managed"><span><i class="ic" style="background:#f59e0b"></i>Google Chrome (24)</span><em class="st">Efficiency mode</em><span class="cpu"><i style="--w:6%"></i>2%</span></div><div class="xf-p managed"><span><i class="ic" style="background:#6366f1"></i>Discord (6)</span><em class="st">Efficiency mode</em><span class="cpu"><i style="--w:3%"></i>1%</span></div><div class="xf-p paused"><span><i class="ic" style="background:#06b6d4"></i>Wallpaper Engine</span><em class="st">Paused by Game Mode</em><span class="cpu"><i style="--w:0%"></i>0%</span></div><div class="xf-p managed"><span><i class="ic" style="background:#22c55e"></i>Spotify</span><em class="st">Efficiency mode</em><span class="cpu"><i style="--w:3%"></i>1%</span></div><div class="xf-p managed"><span><i class="ic" style="background:#64748b"></i>Steam Client WebHelper (8)</span><em class="st">Efficiency mode</em><span class="cpu"><i style="--w:3%"></i>1%</span></div><div class="xf-p sys"><span><i class="ic" style="background:#94a3b8"></i>Antimalware Service</span><em class="st">Untouched</em><span class="cpu"><i style="--w:6%"></i>2%</span></div>
+                  </div>
+                </div>
+                <div class="xf-win ba-ft chg">
+                  <div class="xf-tb"><b class="xf-ft-brand"><svg viewBox="70 58 668 682"><use href="#ft-mark" /></svg>FishyTweaks</b><div class="xf-ctl"><i></i><i></i><i></i></div></div>
+                  <div class="xf-ft-body">
+                    <div class="xf-ft-head">
+                      <div class="xf-ring"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" /><circle class="xf-ring-p" cx="22" cy="22" r="19" pathLength="1" style="--xf-ring:0" /></svg><span class="xf-ring-n">7/7</span></div>
+                      <div><b class="xf-ft-title">Game Mode</b><small class="xf-ft-sub">Active · the match has the PC</small></div>
+                      <em class="ba-state on">Active</em>
+                    </div>
+                    <ol class="xf-steps"><li class="done"><i></i>Check the PC and Fortnite</li><li class="done"><i></i>Pause Wallpaper Engine</li><li class="done"><i></i>Lower background apps</li><li class="done"><i></i>Windows power mode: Best performance</li><li class="done"><i></i>Hold the 1 ms timer</li><li class="done"><i></i>Free memory if it's low</li><li class="done"><i></i>Read every change back to verify it</li></ol>
+                    <div class="xf-ft-foot" style="--xf-foot:1"><span class="xf-ok">Verified · 7 of 7 changes in place</span><em>Undone when the match ends</em></div>
+                  </div>
+                </div>
+                <div class="ba-facts">
+                  <div class="ba-fact chg"><small>System timer</small><b class="ltr">1.0 ms</b><b class="ba-chg">Changed by FishyTweaks</b></div>
+                  <div class="ba-fact chg"><small>Wallpaper Engine</small><b>Paused</b><b class="ba-chg">Changed by FishyTweaks</b></div>
+                  <div class="ba-fact chg"><small>Background apps</small><b>Efficiency mode</b><b class="ba-chg">Changed by FishyTweaks</b></div>
+                  <div class="ba-fact"><small>Antivirus</small><b>On</b><b class="ba-same">Never touched</b></div>
+                </div>
+                <div class="xf-win ba-qs chg">
+                  <div class="ba-qs-h"><small>Power mode</small><b class="ba-chg">Changed by FishyTweaks</b></div>
+                  <div class="ba-seg"><span class="">Best power efficiency</span><span class="">Balanced</span><span class="on">Best performance</span></div>
+                </div>
+                <div class="xf-taskbar ba-taskbar">
+                  <div class="xf-tbi"><i class="start"><b></b><b></b><b></b><b></b></i><i class="search"><span>Search</span></i><i style="--c:#f6c544"></i><i style="--c:#f59e0b"></i><i style="--c:#6366f1"></i><i style="--c:#22c55e"></i><i class="ft"><img src="favicon.svg?v=2" alt="" /></i></div>
+                  <div class="xf-tray"><span>ENG</span><span class="xf-clock">21:04<br />29/10/2026</span></div>
+                </div>
               </div>
             </div>
             <span class="ba-tag before" data-i18n="ba.t1">Before</span>
@@ -324,7 +389,7 @@
                 <li><button class="point" type="button" data-spot="68,33,29,66"><b data-i18n="gm.p4">You pick the steps</b><span data-i18n="gm.p4d">Lower background apps, pause Wallpaper Engine, best power mode, 1 ms timer. Each is a switch.</span></button></li>
               </ul>
             </div>
-            <figure class="shot reveal" data-spot-host data-focus="20,24,47,62">
+            <figure class="shot reveal" data-spot-host data-reveal="activate" data-focus="20,24,47,62">
               <img data-shot="gamemode" src="assets/screens/gamemode.webp" srcset="assets/screens/gamemode.webp 1440w, assets/screens/gamemode@2x.webp 2880w" sizes="(min-width: 1360px) 1200px, 94vw" width="1440" height="900" loading="lazy" alt="Game Mode during a Fortnite session: live FPS, frame timing graph and the list of temporary changes." data-i18n-attr="alt:alt.gamemode" />
               <span class="spot" aria-hidden="true"></span>
             </figure>
@@ -342,7 +407,7 @@
                 <li><button class="point" type="button" data-spot="21.3,58.9,74.2,9.8"><b data-i18n="st.p3">Safe by default</b><span data-i18n="st.p3d">A restore point first, one admin prompt, and every change can be undone from History.</span></button></li>
               </ul>
             </div>
-            <figure class="shot crop reveal" data-spot-host data-crop="16.5" data-crop-h="80" data-focus="20,20,48,40">
+            <figure class="shot crop reveal" data-spot-host data-reveal="scan" data-crop="16.5" data-crop-h="80" data-focus="20,20,48,40">
               <img data-shot="tune" src="assets/screens/tune.webp" srcset="assets/screens/tune.webp 1440w, assets/screens/tune@2x.webp 2880w" sizes="(min-width: 1360px) 940px, (min-width: 1081px) 64vw, 110vw" width="1440" height="900" loading="lazy" alt="Smart Tune's ready plan: 75 tweaks picked, grouped by category, with a restore point and undo." data-i18n-attr="alt:alt.tune" />
               <span class="spot" aria-hidden="true"></span>
             </figure>
@@ -360,18 +425,19 @@
                 <li><button class="point" type="button" data-spot="19.1,75,77.9,24.5"><b data-i18n="fd.p3">Findings, ranked</b><span data-i18n="fd.p3d">Each one says who fixes it: FishyTweaks, you, or a hardware upgrade.</span></button></li>
               </ul>
             </div>
-            <figure class="shot crop reveal" data-spot-host data-crop="16.5" data-focus="19,17,52,26">
+            <figure class="shot crop reveal" data-spot-host data-reveal="evidence" data-crop="16.5" data-focus="19,17,52,26">
               <img data-shot="doctor" src="assets/screens/doctor.webp" srcset="assets/screens/doctor.webp 1440w, assets/screens/doctor@2x.webp 2880w" sizes="(min-width: 1360px) 940px, (min-width: 1081px) 64vw, 110vw" width="1440" height="900" loading="lazy" alt="FPS Doctor results: health score, a live CPU-limited reading and ranked findings." data-i18n-attr="alt:alt.doctor" />
               <span class="spot" aria-hidden="true"></span>
             </figure>
           </article>
 
-          <!-- Performance + Fortnite -->
+          <!-- Performance + Fortnite + Recovery -->
           <article class="feat tabs-block" data-tabs>
             <div class="feat-copy reveal">
               <div class="tablist" role="tablist" aria-label="More tools" data-i18n-attr="aria-label:tabs.label">
                 <button class="tab" role="tab" id="tab-perf" aria-controls="panel-perf" aria-selected="true" type="button" data-i18n="pf.k">Performance</button>
                 <button class="tab" role="tab" id="tab-fn" aria-controls="panel-fn" aria-selected="false" tabindex="-1" type="button" data-i18n="fn.k">Fortnite settings</button>
+                <button class="tab" role="tab" id="tab-rc" aria-controls="panel-rc" aria-selected="false" tabindex="-1" type="button" data-i18n="rc.k">Recovery</button>
               </div>
               <div class="tabpanel" role="tabpanel" id="panel-perf" aria-labelledby="tab-perf">
                 <h3 class="h3" data-i18n="pf.h">Every session, with the FPS it really measured.</h3>
@@ -391,12 +457,24 @@
                   <li data-i18n="fn.t3">Restore your original settings any time</li>
                 </ul>
               </div>
+              <div class="tabpanel" role="tabpanel" id="panel-rc" aria-labelledby="tab-rc" hidden>
+                <h3 class="h3" data-i18n="rc.h">Every change in one list, each with its own undo.</h3>
+                <p class="lead" data-i18n="rc.p">Recovery shows everything FishyTweaks has changed right now: PC tweaks, Smart Tune, the power plan, Fortnite settings and DNS. Each item keeps the value it replaced, so undo puts back exactly what was there.</p>
+                <ul class="ticks">
+                  <li data-i18n="rc.t1">The saved original for every change</li>
+                  <li data-i18n="rc.t2">Undo one item, or everything at once</li>
+                  <li data-i18n="rc.t3">A Windows restore point before big changes, if you want one</li>
+                </ul>
+              </div>
             </div>
             <div class="tab-shots reveal">
-              <figure class="shot crop" data-for="panel-perf" data-crop="16.5" data-focus="19,18,52,48">
+              <figure class="shot crop" data-for="panel-rc" data-reveal="list" data-crop="16.5" data-off data-focus="19,8,52,58">
+                <img data-shot="recovery" src="assets/screens/recovery.webp" srcset="assets/screens/recovery.webp 1440w, assets/screens/recovery@2x.webp 2880w" sizes="(min-width: 1360px) 940px, (min-width: 1081px) 64vw, 110vw" width="1440" height="900" loading="lazy" decoding="async" alt="Recovery: every change FishyTweaks has active right now, each with its saved original and an undo button." data-i18n-attr="alt:alt.recovery" />
+              </figure>
+              <figure class="shot crop" data-for="panel-perf" data-reveal="graph" data-crop="16.5" data-focus="19,18,52,48">
                 <img data-shot="performance" src="assets/screens/performance.webp" srcset="assets/screens/performance.webp 1440w, assets/screens/performance@2x.webp 2880w" sizes="(min-width: 1360px) 940px, (min-width: 1081px) 64vw, 110vw" width="1440" height="900" loading="lazy" alt="Performance history: sessions, time played and an average FPS graph per session." data-i18n-attr="alt:alt.performance" />
               </figure>
-              <figure class="shot crop" data-for="panel-fn" data-crop="16.5" data-off data-focus="18.5,17,54,57">
+              <figure class="shot crop" data-for="panel-fn" data-reveal="graph" data-crop="16.5" data-off data-focus="18.5,17,54,57">
                 <img data-shot="fortnite" src="assets/screens/fortnite.webp" srcset="assets/screens/fortnite.webp 1440w, assets/screens/fortnite@2x.webp 2880w" sizes="(min-width: 1360px) 940px, (min-width: 1081px) 64vw, 110vw" width="1440" height="900" loading="lazy" alt="Fortnite settings: preset cards with resolution and render mode, and an apply-and-launch button." data-i18n-attr="alt:alt.fortnite" />
               </figure>
             </div>
@@ -530,10 +608,6 @@
             <details>
               <summary data-i18n="q6">How do updates work?</summary>
               <div class="ans" data-i18n="a6">When the app starts it checks GitHub for a newer release. If there is one, you'll see an update banner; the download is signature-checked, installed and the app restarts in a few seconds. Nothing else downloads in the background.</div>
-            </details>
-            <details>
-              <summary data-i18n="q7">I had FishLaunch. Is this the same app?</summary>
-              <div class="ans" data-i18n="a7">Yes. FishLaunch was renamed to FishyTweaks and now focuses on Fortnite. Your copy keeps updating itself from the same place.</div>
             </details>
           </div>
         </div>

@@ -1,6 +1,7 @@
 /* ================= The Windows transformation (index only) =================
-   A sticky stage that scroll drives through four beats: a busy desktop, the camera finding Task
-   Manager, FishyTweaks Game Mode working through its real checklist, and the calm result. The
+   A screen-high stage that plays by itself (xform.js) through four beats: a busy desktop, the
+   camera finding Task Manager, FishyTweaks Game Mode working through its real checklist, and the
+   calm result. The
    desktop is drawn at a fixed 1280×780 and scaled to fit (--xf-s, set by xform.js); the camera is
    one transform on .xf-cam and each window adds its own depth. Without JS, or with reduced motion,
    the section shows the finished state as a normal block. */
@@ -27,14 +28,15 @@
   padding: 96px var(--gutter);
 }
 .xf.live .xf-track {
-  height: 420vh;
+  height: 210vh;
 }
 .xf.live .xf-sticky {
   position: sticky;
   top: 0;
   height: 100vh;
   height: 100svh;
-  padding-block: calc(var(--nav-h) + 12px) 24px;
+  min-height: 600px;
+  padding-block: calc(var(--nav-h) + 8px) 24px;
 }
 
 /* ---------- copy ---------- */
@@ -86,24 +88,82 @@
   transform: none;
   pointer-events: auto;
 }
-.xf-dots {
+/* playback: a play/pause/replay button and four step bars that fill like story segments */
+.xf-ctrl {
   display: none;
-  gap: 6px;
+  align-items: center;
+  gap: 14px;
   margin-top: 22px;
 }
-.xf.live .xf-dots {
+.xf.live .xf-ctrl {
   display: flex;
 }
-.xf-dots i {
-  width: 22px;
+.xf-play {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px var(--line-2);
+  transition: background 0.2s, transform 0.12s;
+}
+.xf-play:hover {
+  background: rgba(255, 255, 255, 0.11);
+}
+.xf-play:active {
+  transform: scale(0.94);
+}
+.xf-play svg {
+  width: 15px;
+  height: 15px;
+  display: none;
+}
+.xf[data-state="playing"] .i-pause,
+.xf[data-state="paused"] .i-play,
+.xf[data-state="done"] .i-replay {
+  display: block;
+}
+.xf-dots {
+  display: flex;
+  flex: 1;
+  max-width: 260px;
+  gap: 6px;
+}
+.xf-dots button {
+  position: relative;
+  flex: 1;
+  height: 22px;
+  cursor: pointer;
+}
+.xf-dots button::before,
+.xf-dots button::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
   height: 3px;
+  margin-top: -1.5px;
   border-radius: 2px;
   background: var(--line-2);
-  transition: background 0.4s, width 0.4s var(--ease-out);
 }
-.xf-dots i.on {
-  width: 36px;
+.xf-dots button::after {
   background: var(--accent);
+  transform-origin: left;
+  transform: scaleX(var(--fill, 0));
+}
+[dir="rtl"] .xf-dots button::after {
+  transform-origin: right;
+}
+.xf-dots button:hover::before {
+  background: var(--line-3, rgba(255, 255, 255, 0.25));
+}
+.xf-dots button:focus-visible {
+  outline: 2px solid var(--accent-hi);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 .xf-note {
   margin-top: 18px;
@@ -192,10 +252,17 @@
   background: #1c1f26;
   color: #e7e9ee;
   font: 13px/1.4 "Segoe UI Variable Text", "Segoe UI", var(--font);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.09), 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 24px 60px -18px rgba(0, 0, 0, 0.75), 0 8px 18px -8px rgba(0, 0, 0, 0.6);
+  --xf-z: 0;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.09), 0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 calc(24px + var(--xf-z) * 0.14px) calc(60px + var(--xf-z) * 0.3px) -18px rgba(0, 0, 0, calc(0.6 + var(--xf-z) * 0.0012)),
+    0 8px 18px -8px rgba(0, 0, 0, 0.6);
   transform-origin: 50% 50%;
   will-change: transform, opacity;
   backface-visibility: hidden;
+}
+.xf:not(.flat) .xf-browser,
+.xf:not(.flat) .xf-launch {
+  filter: blur(calc(var(--xf-dim, 0) * 2.4px));
 }
 .xf-win::after {
   /* the dimming used for depth of field: cheaper than a blur on a big layer */
@@ -203,7 +270,7 @@
   position: absolute;
   inset: 0;
   background: #05080f;
-  opacity: var(--dim, 0);
+  opacity: var(--xf-dim, 0);
   pointer-events: none;
 }
 .xf-tb {
@@ -402,7 +469,7 @@
 .xf-tm {
   left: 560px;
   top: 76px;
-  width: 660px;
+  width: 580px;
   height: 500px;
   background: #1b1d22;
 }
@@ -476,7 +543,7 @@
 .xf-ph,
 .xf-p {
   display: grid;
-  grid-template-columns: 1fr 130px 54px 82px;
+  grid-template-columns: 1fr 140px 96px;
   align-items: center;
   gap: 10px;
   padding: 0 10px;
@@ -845,16 +912,19 @@
   .xf.live .xf-sticky {
     grid-template-rows: auto 1fr;
     gap: 8px;
+    height: auto;
+    min-height: 0;
+    padding-block: 56px 32px;
+  }
+  .xf.live .xf-stage {
+    height: min(62vh, 520px);
   }
   .xf.live .xf-stage {
     overflow: hidden;
     border-radius: 14px;
     margin-inline: calc(var(--gutter) * -0.5);
   }
-  .xf.live .xf-track {
-    height: 300vh;
-  }
-  .xf-copy .h2 {
+    .xf-copy .h2 {
     margin-bottom: 10px;
     font-size: clamp(1.5rem, 1.1rem + 2vw, 2rem);
   }
@@ -864,7 +934,7 @@
   .xf-note {
     margin-top: 8px;
   }
-  .xf.live .xf-dots {
+  .xf.live .xf-ctrl {
     margin-top: 10px;
   }
 }
@@ -874,7 +944,11 @@
   }
 }
 
-/* ================= Before / after: the settings Game Mode changes ================= */
+/* ================= Before / after: one desktop, two states =================
+   Both sides are generated from the same template (tools/ba_build.py), so every window sits in the
+   same place; only what FishyTweaks changes differs, and each of those carries a "Changed by
+   FishyTweaks" marker on the after side. The before side is in the flow (it sets the height), the
+   after side lies on top and is revealed by the handle. */
 @property --ba {
   syntax: "<number>";
   inherits: true;
@@ -882,127 +956,291 @@
 }
 .ba-box {
   position: relative;
-  aspect-ratio: 16 / 7;
-  border-radius: 16px;
+  border-radius: 18px;
   overflow: hidden;
   user-select: none;
   touch-action: pan-y;
   cursor: ew-resize;
-  box-shadow: 0 0 0 1px var(--line-2), 0 40px 100px -40px rgba(0, 0, 0, 0.9), 0 0 120px -40px rgba(59, 130, 246, 0.35);
-  font: 13px/1.4 "Segoe UI Variable Text", "Segoe UI", var(--font);
+  box-shadow: 0 0 0 1px var(--line-2), 0 50px 120px -50px rgba(0, 0, 0, 0.95), 0 0 140px -50px rgba(59, 130, 246, 0.4);
 }
 .ba-box.snap {
-  transition: --ba 0.32s var(--ease-out);
-}
-.ba-pane {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  grid-template-rows: 1fr auto;
-  padding: clamp(14px, 2.4vw, 28px);
-  gap: 16px;
-  isolation: isolate;
+  transition: --ba 0.34s var(--ease-out);
 }
 .ba-pane.after {
-  clip-path: inset(0 0 0 calc(var(--ba) * 1%));
-}
-.ba-scene {
   position: absolute;
   inset: 0;
-  z-index: -1;
+  clip-path: inset(0 0 0 calc(var(--ba) * 1%));
 }
-.before .ba-scene {
+.ba-desk {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  grid-template-areas: "tm ft" "facts qs";
+  gap: 18px;
+  padding: 64px clamp(16px, 2.4vw, 32px) 80px;
+  font: 13px/1.4 "Segoe UI Variable Text", "Segoe UI", var(--font);
   background:
-    radial-gradient(50% 60% at 22% 30%, rgba(245, 158, 11, 0.22), transparent 70%),
-    radial-gradient(60% 70% at 80% 100%, rgba(239, 68, 68, 0.16), transparent 70%),
-    conic-gradient(from 200deg at 50% 120%, #1a1408, #2b1d0b 30%, #141018 60%, #22160a 85%),
-    #120e0a;
-}
-.after .ba-scene {
-  background:
-    radial-gradient(60% 80% at 78% 112%, rgba(34, 211, 238, 0.32), transparent 60%),
+    radial-gradient(60% 80% at 78% 112%, rgba(34, 211, 238, 0.3), transparent 60%),
     radial-gradient(70% 90% at 20% 110%, rgba(59, 130, 246, 0.5), transparent 62%),
+    radial-gradient(40% 50% at 52% 70%, rgba(99, 102, 241, 0.3), transparent 70%),
     conic-gradient(from 210deg at 50% 120%, #0b1730, #13306b 25%, #0b1730 45%, #1a3f8f 60%, #0b1730 80%),
     #0a1224;
 }
-.ba-procs {
-  list-style: none;
+.ba-desk .xf-win {
+  position: relative;
+  left: auto;
+  top: auto;
+  width: auto;
+  height: auto;
+  transition: box-shadow 0.3s;
+}
+.ba-tm {
+  grid-area: tm;
+}
+.ba-ft {
+  grid-area: ft;
+}
+.ba-facts {
+  grid-area: facts;
+}
+.ba-qs {
+  grid-area: qs;
   align-self: start;
-  margin-top: 40px;
-  width: min(440px, 62%);
-  padding: 8px;
-  border-radius: 12px;
-  background: rgba(16, 18, 24, 0.82);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 20px 50px -20px rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(10px);
 }
-.ba-procs li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  height: 34px;
-  padding: 0 10px;
-  border-radius: 7px;
-  color: #d4d7de;
-  white-space: nowrap;
+
+/* task manager */
+.ba-tm-body {
+  padding: 12px 8px 10px;
+  background: #1b1d22;
 }
-.ba-procs li i {
-  width: 14px;
-  height: 14px;
-  border-radius: 4px;
-  flex: none;
-}
-.ba-procs em {
-  margin-left: auto;
-  font-style: normal;
-  font-size: 12px;
-  color: #fbbf24;
-}
-.before .ba-procs li {
-  background: rgba(245, 158, 11, 0.06);
-}
-.ba-procs em.eff {
-  color: #34d399;
-}
-.ba-procs em.pause {
-  color: #67e8f9;
-}
-.ba-stats {
+.ba-cpu {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 14px;
+  padding: 2px 10px 12px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
-.ba-stats div {
+.ba-cpu > div:first-child {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+}
+.ba-cpu b {
+  font-size: 14px;
+  font-weight: 600;
+}
+.ba-cpu-n {
+  font: 600 22px/1.1 var(--mono);
+}
+.before .ba-cpu-n {
+  color: #f59e0b;
+}
+.after .ba-cpu-n {
+  color: #60a5fa;
+}
+/* one cell per logical core, coloured by load */
+.ba-cores {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 3px;
+}
+.ba-cores i {
+  height: 15px;
+  border-radius: 3px;
+  background: color-mix(in oklab, #f59e0b calc(var(--u) * 1%), #23324a);
+}
+.after .ba-cores i {
+  background: color-mix(in oklab, #3b82f6 calc(var(--u) * 1.6%), #1d2a40);
+}
+.ba-tm .xf-ph,
+.ba-tm .xf-p {
+  grid-template-columns: minmax(0, 1fr) 132px 92px;
+}
+.ba-tm .xf-p {
+  height: 32px;
+}
+.xf-p .cpu {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.xf-p .cpu i {
+  width: 38px;
+  height: 5px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, currentColor var(--w), rgba(255, 255, 255, 0.08) var(--w));
+  opacity: 0.8;
+}
+.ba-tm .xf-p.game .cpu {
+  color: #93c5fd;
+}
+
+/* fishytweaks */
+.ba-ft .xf-ft-body {
+  padding: 18px 20px;
+}
+.ba-ft .xf-ft-head {
+  margin-bottom: 12px;
+}
+.ba-ft .xf-ft-head > div:nth-child(2) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.ba-ft .xf-ft-head > div:last-child {
+  display: block;
+}
+.ba-chg.ghost {
+  visibility: hidden;
+}
+.ba-ft .xf-ft-sub {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ba-ft .xf-ft-head > div:nth-child(2) {
+  min-width: 0;
+}
+.ba-ft .xf-steps li {
+  height: 32px;
+  font-size: 13px;
+}
+.ba-ft .xf-ft-foot {
+  margin-top: 10px;
+}
+.ba-state {
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: #a1a1aa;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+.ba-state.on {
+  color: #4ade80;
+  background: rgba(34, 197, 94, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.35);
+}
+
+/* facts + power mode */
+.ba-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-content: start;
+}
+.ba-fact {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
   padding: 12px 14px;
   border-radius: 12px;
-  background: rgba(12, 14, 20, 0.78);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  background: rgba(14, 18, 26, 0.82);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.09), 0 16px 34px -18px rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(10px);
 }
-.ba-stats small {
+.ba-fact small,
+.ba-qs-h small {
   color: #a1a1aa;
-  font-size: 11.5px;
+  font-size: 11px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
 }
-.ba-stats b {
-  font-size: clamp(14px, 1.5vw, 19px);
+.ba-fact > b:not(.ba-chg):not(.ba-same) {
+  font-size: 17px;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  color: #f4f4f5;
 }
-.before .ba-stats b {
-  color: #fcd9a0;
+.ba-same {
+  font-size: 11px;
+  font-weight: 600;
+  color: #4ade80;
 }
-.after .ba-stats b {
+.ba-qs {
+  padding: 14px;
+  background: rgba(30, 34, 42, 0.92);
+}
+.ba-qs-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.ba-seg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+}
+.ba-seg span {
+  padding: 8px 6px;
+  border-radius: 7px;
+  text-align: center;
+  color: #a1a1aa;
+  font-size: 12px;
+  line-height: 1.25;
+}
+.ba-seg span.on {
   color: #fff;
+  background: #3b82f6;
+  box-shadow: 0 6px 16px -8px rgba(59, 130, 246, 0.9);
 }
+.before .ba-seg span.on {
+  background: #4b5563;
+  box-shadow: none;
+}
+
+/* what FishyTweaks changed: an outline and a tag, on the after side only */
+.ba-desk .chg {
+  box-shadow: 0 0 0 1.5px rgba(96, 165, 250, 0.95), 0 0 34px -8px rgba(59, 130, 246, 0.75), 0 20px 50px -24px rgba(0, 0, 0, 0.9);
+}
+.ba-chg {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 2px 8px 2px 6px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #bfdbfe;
+  background: rgba(59, 130, 246, 0.2);
+  white-space: nowrap;
+}
+.ba-chg::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  background: url("favicon.svg?v=2") center / cover;
+}
+.ba-qs-h .ba-chg {
+  margin: 0;
+}
+
+/* taskbar */
+.ba-taskbar {
+  position: absolute;
+  inset: auto 0 0 0;
+  border-radius: 0;
+  height: 46px;
+}
+
+/* labels, handle */
 .ba-tag {
   position: absolute;
+  z-index: 5;
   top: 16px;
-  padding: 5px 12px;
+  padding: 6px 12px;
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
@@ -1010,8 +1248,8 @@
 }
 .ba-tag.before {
   left: 16px;
-  background: rgba(10, 12, 16, 0.75);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+  background: rgba(10, 12, 16, 0.8);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
   opacity: clamp(0, calc((var(--ba) - 14) / 10), 1);
 }
 .ba-tag.after {
@@ -1022,6 +1260,7 @@
 }
 .ba-handle {
   position: absolute;
+  z-index: 6;
   top: 0;
   bottom: 0;
   left: calc(var(--ba) * 1%);
@@ -1035,16 +1274,16 @@
   bottom: 0;
   left: -1px;
   width: 2px;
-  background: linear-gradient(180deg, transparent, #fff 12%, #fff 88%, transparent);
-  box-shadow: 0 0 18px rgba(96, 165, 250, 0.8);
+  background: linear-gradient(180deg, transparent, #fff 8%, #fff 92%, transparent);
+  box-shadow: 0 0 18px rgba(96, 165, 250, 0.9);
 }
 .ba-handle span {
   position: absolute;
   top: 50%;
   left: 0;
-  width: 46px;
-  height: 46px;
-  margin: -23px 0 0 -23px;
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -1060,24 +1299,32 @@
 .ba-box:hover .ba-handle span,
 .ba-box.drag .ba-handle span {
   transform: scale(1.08);
-  box-shadow: 0 0 0 9px rgba(96, 165, 250, 0.22), 0 12px 34px -6px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 0 9px rgba(96, 165, 250, 0.24), 0 12px 34px -6px rgba(0, 0, 0, 0.7);
 }
 .ba-handle:focus-visible span {
   box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px var(--accent-hi);
 }
 .ba-note {
   margin-top: 16px;
-  max-width: 70ch;
+  max-width: 76ch;
 }
-@media (max-width: 700px) {
-  .ba-box {
-    aspect-ratio: 4 / 5.4;
+@media (max-width: 900px) {
+  .ba-desk {
+    grid-template-columns: 1fr;
+    grid-template-areas: "ft" "tm" "qs" "facts";
+    gap: 12px;
+    padding-top: 58px;
   }
-  .ba-procs {
-    width: 100%;
+  .ba-tm .xf-ph,
+  .ba-tm .xf-p {
+    grid-template-columns: minmax(0, 1fr) 112px 64px;
   }
-  .ba-stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .ba-tm .xf-p .cpu i {
+    display: none;
+  }
+  .ba-taskbar .search,
+  .ba-taskbar .xf-tray {
+    display: none;
   }
 }
 
@@ -1258,4 +1505,417 @@
 .final-cap {
   margin-top: 22px;
   text-align: center;
+}
+
+/* ---------- scene v2: cores, light, quick settings, glass ---------- */
+.xf-cores {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 3px;
+  margin: 2px 0 8px;
+}
+.xf-cores i {
+  height: 11px;
+  border-radius: 2px;
+  background: color-mix(in oklab, var(--xf-core-c, #f59e0b) calc(var(--u, 50) * 1%), #22304a);
+  transition: background 0.3s linear;
+}
+.xf-graph {
+  height: 96px;
+}
+/* blue light from FishyTweaks spilling onto Task Manager's right edge */
+.xf-tm::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(270deg, rgba(59, 130, 246, 0.28), transparent 38%);
+  box-shadow: inset -1px 0 0 rgba(147, 197, 253, 0.6);
+  opacity: var(--xf-spill, 0);
+}
+.xf-glass {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.02) 28%, transparent 42%, transparent 70%, rgba(255, 255, 255, 0.03) 85%, transparent);
+  opacity: var(--xf-glass, 0);
+}
+.xf-qs {
+  right: 26px;
+  left: auto;
+  bottom: 62px;
+  width: 400px;
+  padding: 16px;
+  background: rgba(32, 36, 44, 0.96);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 30px 70px -20px rgba(0, 0, 0, 0.85);
+}
+.xf-qs-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.xf-qs-h small {
+  color: #a1a1aa;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.xf-qs-by {
+  font-size: 11px;
+  font-weight: 600;
+  color: #bfdbfe;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.2);
+  opacity: var(--xf-qs-by, 0);
+}
+.xf-qs-seg {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+}
+.xf-qs-seg span {
+  position: relative;
+  z-index: 1;
+  padding: 9px 6px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.25;
+  color: #a1a1aa;
+  transition: color 0.3s;
+}
+.xf-qs-seg span.on {
+  color: #fff;
+}
+.xf-qs-seg::before {
+  /* the selection slides from Balanced to Best performance */
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: calc(4px + (100% - 16px) / 3 * (1 + var(--xf-qs-pos, 0)) + 4px * (1 + var(--xf-qs-pos, 0)));
+  width: calc((100% - 16px) / 3);
+  border-radius: 7px;
+  background: color-mix(in oklab, #3b82f6 calc(var(--xf-qs-pos, 0) * 100%), #4b5563);
+  box-shadow: 0 6px 16px -8px rgba(59, 130, 246, calc(var(--xf-qs-pos, 0) * 0.9));
+}
+.xf-next {
+  margin-top: 6px;
+  align-self: flex-start;
+}
+
+/* ---------- hero showcase: directed screen changes ---------- */
+.showcase-bar {
+  position: relative;
+}
+.sc-tab[aria-selected="true"] {
+  background: transparent;
+  box-shadow: none;
+}
+.sc-tab {
+  position: relative;
+  z-index: 1;
+}
+.sc-ind {
+  position: absolute;
+  z-index: 0;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  border-radius: 8px;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--line-2), 0 4px 14px -6px rgba(59, 130, 246, 0.5);
+  transition: transform 0.45s var(--ease-out), width 0.45s var(--ease-out);
+}
+.hero-shot .sc-img {
+  transition: none;
+}
+.hero-shot .sc-img.on {
+  animation: sc-wipe 0.85s var(--ease-out) both;
+  z-index: 2;
+}
+.hero-shot .sc-img.was {
+  opacity: 1;
+  z-index: 1;
+  animation: sc-leave 0.85s var(--ease-out) both;
+}
+@keyframes sc-wipe {
+  from {
+    opacity: 1;
+    clip-path: inset(0 100% 0 0);
+    filter: blur(6px) brightness(1.15);
+    transform: translateX(-1.5%) scale(1.01);
+  }
+  60% {
+    filter: blur(0) brightness(1.05);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    filter: none;
+    transform: none;
+  }
+}
+@keyframes sc-leave {
+  to {
+    opacity: 0.35;
+    transform: scale(0.985);
+  }
+}
+[dir="rtl"] .hero-shot .sc-img.on {
+  animation-name: sc-wipe-rtl;
+}
+@keyframes sc-wipe-rtl {
+  from {
+    opacity: 1;
+    clip-path: inset(0 0 0 100%);
+    filter: blur(6px) brightness(1.15);
+    transform: translateX(1.5%) scale(1.01);
+  }
+  60% {
+    filter: blur(0) brightness(1.05);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    filter: none;
+    transform: none;
+  }
+}
+/* spotlight: the rest of the screen dims for a moment around the part this feature is about */
+.sc-spot {
+  position: absolute;
+  z-index: 4;
+  left: calc(var(--fx) * 1%);
+  top: calc(var(--fy) * 1%);
+  width: calc(var(--fw) * 1%);
+  height: calc(var(--fh) * 1%);
+  border-radius: 12px;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: 0 0 0 1.5px rgba(96, 165, 250, 0.9), 0 0 0 200vmax rgba(5, 8, 14, 0.45), 0 0 40px rgba(59, 130, 246, 0.5);
+  transition: left 0.6s var(--ease-out), top 0.6s var(--ease-out), width 0.6s var(--ease-out), height 0.6s var(--ease-out);
+}
+.window.spotting .sc-spot {
+  animation: sc-spot 2.6s var(--ease) 0.75s both;
+}
+@keyframes sc-spot {
+  0% {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+  18%,
+  70% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@media (max-width: 760px) {
+  .sc-spot {
+    display: none;
+  }
+}
+
+/* ---------- feature screenshots: bigger, and each with its own entrance ---------- */
+@media (min-width: 1081px) {
+  .feat-split {
+    grid-template-columns: minmax(0, 3.6fr) minmax(0, 8.4fr);
+    gap: 32px 44px;
+  }
+  .feat-split.rev {
+    grid-template-columns: minmax(0, 8.4fr) minmax(0, 3.6fr);
+  }
+}
+.shot[data-reveal] {
+  isolation: isolate;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* Game Mode: the screen switches on, from idle grey to live colour */
+  .shot[data-reveal="activate"] img {
+    filter: grayscale(1) brightness(0.55);
+    transition: filter 1.3s var(--ease-out) 0.15s;
+  }
+  .shot[data-reveal="activate"].played img {
+    filter: none;
+  }
+  /* Smart Tune: a scan line passes over the screen and leaves the plan behind it */
+  .shot[data-reveal="scan"] img {
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 1.4s var(--ease-in-out, cubic-bezier(0.65, 0, 0.35, 1)) 0.1s;
+  }
+  .shot[data-reveal="scan"].played img {
+    clip-path: inset(0 0 0 0);
+  }
+  .shot[data-reveal="scan"]::after {
+    content: "";
+    position: absolute;
+    z-index: 3;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #22d3ee 20%, #93c5fd 50%, #22d3ee 80%, transparent);
+    box-shadow: 0 0 24px 6px rgba(34, 211, 238, 0.45);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .shot[data-reveal="scan"].played::after {
+    animation: scan-line 1.4s cubic-bezier(0.65, 0, 0.35, 1) 0.1s both;
+  }
+  @keyframes scan-line {
+    0% {
+      top: 0;
+      opacity: 1;
+    }
+    92% {
+      opacity: 1;
+    }
+    100% {
+      top: calc(100% - 2px);
+      opacity: 0;
+    }
+  }
+  /* FPS Doctor: the report fades up, then the evidence is pointed out step by step (the tour) */
+  .shot[data-reveal="evidence"] img {
+    opacity: 0.25;
+    transform: scale(0.985);
+    transition: opacity 0.9s var(--ease) 0.1s, transform 1.1s var(--ease-out) 0.1s;
+  }
+  .shot[data-reveal="evidence"].played img {
+    opacity: 1;
+    transform: none;
+  }
+  /* Performance / Fortnite draw in left to right like a graph; Recovery's list fills top to bottom.
+     Keyframes (not transitions), so the entrance replays each time its tab is chosen. */
+  .tab-shots .shot[data-reveal] img {
+    clip-path: inset(0 100% 0 0);
+  }
+  .tab-shots.in .shot[data-reveal]:not([data-off]) img {
+    animation: shot-graph 1.2s var(--ease-out) 0.12s both;
+  }
+  .tab-shots.in .shot[data-reveal="list"]:not([data-off]) img {
+    animation-name: shot-list;
+  }
+  @keyframes shot-graph {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+  @keyframes shot-list {
+    from {
+      clip-path: inset(0 0 100% 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+}
+
+/* ---------- lower sections: tighter pacing, steps that connect ---------- */
+.section {
+  padding-block: clamp(64px, 8vw, 112px);
+}
+.section-head {
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+.steps {
+  background: linear-gradient(180deg, var(--surface), var(--bg-2));
+}
+.step-n {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 26px;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 600;
+  background: radial-gradient(circle at 30% 25%, #60a5fa, #3b82f6 60%, #2563eb);
+  box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.12), 0 10px 24px -10px rgba(59, 130, 246, 0.9);
+}
+/* a line runs from each number to the next, drawn when the steps come into view */
+.step:not(:last-child) .step-n::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  inset-inline-start: calc(100% + 14px);
+  width: calc(100vw / 3 - 120px);
+  max-width: 300px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(96, 165, 250, 0.7), rgba(96, 165, 250, 0.08));
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 1s var(--ease-out) 0.35s;
+}
+[dir="rtl"] .step:not(:last-child) .step-n::after {
+  transform-origin: right;
+  background: linear-gradient(270deg, rgba(96, 165, 250, 0.7), rgba(96, 165, 250, 0.08));
+}
+.steps.in .step-n::after {
+  transform: scaleX(1);
+}
+.step:nth-child(2) .step-n::after {
+  transition-delay: 0.7s;
+}
+@media (max-width: 900px) {
+  .step .step-n::after {
+    display: none;
+  }
+}
+
+/* ---------- final download: the button carries the section ---------- */
+.final .btn-primary {
+  height: 54px;
+  padding: 0 26px;
+  font-size: var(--t-18);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #4b8ff8, #3b82f6 55%, #2f74ea);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 14px 34px -12px rgba(59, 130, 246, 0.85);
+  transition: box-shadow 0.25s var(--ease), transform 0.12s var(--ease), filter 0.2s;
+}
+.final .btn-primary:hover {
+  filter: brightness(1.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.34), 0 18px 44px -12px rgba(59, 130, 246, 1);
+}
+.final .btn-ghost {
+  height: 54px;
+}
+/* copy arrives in order once the section is in view: mark, headline, line, buttons */
+@media (prefers-reduced-motion: no-preference) {
+  .final-copy.reveal > * {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.7s var(--ease), transform 0.8s var(--ease-out);
+  }
+  .final-copy.reveal.in > * {
+    opacity: 1;
+    transform: none;
+  }
+  .final-copy.reveal.in > :nth-child(2) {
+    transition-delay: 0.08s;
+  }
+  .final-copy.reveal.in > :nth-child(3) {
+    transition-delay: 0.16s;
+  }
+  .final-copy.reveal.in > :nth-child(4) {
+    transition-delay: 0.26s;
+  }
+  .final-copy.reveal.in > :nth-child(n + 5) {
+    transition-delay: 0.34s;
+  }
 }

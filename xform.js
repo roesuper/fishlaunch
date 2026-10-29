@@ -1,10 +1,8 @@
-// The Windows transformation (index only). Scroll position → one progress value p in [0, 1] →
-// every transform, row state and caption is a pure function of p, so scrolling backwards always
-// lands on exactly the same frames. A small amount of smoothing makes the camera glide instead of
-// following each wheel notch. The graph is the only thing that runs on its own clock (it ticks
-// while the section is on screen) and its level is still decided by p. With reduced motion the story
-// still plays as you scroll (it's motion you drive yourself), but flat: no camera tilt, no depth
-// moves, no glide, no wiggle.
+// The Windows transformation (index only). One progress value p in [0, 1] drives everything:
+// every transform, row state and caption is a pure function of p, so any point can be jumped to and
+// rewinding shows exactly the same frames. p plays by itself like a short film and can be scrubbed
+// by scrolling (see playback). The CPU graph and core grid wiggle on their own timer; their level
+// still follows p. With reduced motion it still plays, but flat: no camera tilt, no depth moves.
 (() => {
   const root = document.getElementById("transform");
   if (!root) return;
@@ -14,11 +12,13 @@
   const small = matchMedia("(max-width: 1000px)");
 
   const stage = $(".xf-stage");
-  const track = $(".xf-track");
   const cam = $(".xf-cam");
-  const win = { browser: $(".xf-browser"), launch: $(".xf-launch"), tm: $(".xf-tm"), ft: $(".xf-ft") };
+  const win = { browser: $(".xf-browser"), launch: $(".xf-launch"), tm: $(".xf-tm"), qs: $(".xf-qs"), ft: $(".xf-ft") };
+  const qsSeg = $$(".xf-qs-seg span");
+  const coreEls = $$(".xf-cores i");
+  const CORE_BASE = [88, 72, 95, 64, 81, 70, 92, 58, 77, 84, 66, 90, 73, 61, 86, 79, 69, 94, 57, 75];
   const caps = $$(".xf-cap");
-  const dots = $$(".xf-dots i");
+  const dots = $$(".xf-dots button");
   const steps = $$(".xf-steps li");
   const rows = $$(".xf-p");
   const bgRows = rows.filter((r) => r.dataset.p === "bg");
@@ -81,10 +81,19 @@
       [0, { z: 10 }],
       [0.12, {}],
       [0.3, { z: 190 }],
-      [0.42, { z: 120, x: -330 }],
-      [0.7, { z: 110, x: -330 }],
-      [0.84, { z: 30, x: -380, y: -6, d: 0.16 }],
-      [1, { z: 10, x: -390, d: 0.28 }],
+      [0.42, { z: 120, x: -390 }],
+      [0.7, { z: 110, x: -390 }],
+      [0.84, { z: 30, x: -410, y: -6, d: 0.16 }],
+      [1, { z: 10, x: -420, d: 0.28 }],
+    ]),
+    // Windows quick settings rises from the taskbar while Game Mode sets Best performance
+    qs: norm([
+      [0, { y: 70, z: 230, o: 0 }],
+      [0.55, {}],
+      [0.59, { y: 0, o: 1 }],
+      [0.7, {}],
+      [0.75, { y: 40, o: 0 }],
+      [1, {}],
     ]),
     ft: norm([
       [0, { x: 460, z: 280, o: 0 }],
@@ -127,24 +136,40 @@
   let lastSteps = "";
   function render(p) {
     const flat = small.matches || reduce;
+    root.classList.toggle("flat", flat);
     // camera + windows
     const c = sample(small.matches ? TRACKS.camSmall : TRACKS.cam, p);
-    cam.style.transform = `translate3d(${c.x.toFixed(1)}px,${c.y.toFixed(1)}px,0) rotateX(${flat ? 0 : c.rx.toFixed(2)}deg) rotateY(${flat ? 0 : c.ry.toFixed(2)}deg) scale(${c.s.toFixed(4)})`;
-    for (const k of ["browser", "launch", "tm", "ft"]) {
+    // the stage sits on the left in Hebrew, so the camera's sideways moves mirror (the desktop itself stays LTR)
+    const cx = !small.matches && document.documentElement.dir === "rtl" ? -c.x * 0.35 : c.x;
+    cam.style.transform = `translate3d(${cx.toFixed(1)}px,${c.y.toFixed(1)}px,0) rotateX(${flat ? 0 : c.rx.toFixed(2)}deg) rotateY(${flat ? 0 : c.ry.toFixed(2)}deg) scale(${c.s.toFixed(4)})`;
+    for (const k of ["browser", "launch", "tm", "qs", "ft"]) {
       const v = sample(TRACKS[k], p);
       const el = win[k];
       el.style.transform = tf(v, flat);
       el.style.opacity = v.o.toFixed(3);
-      el.style.setProperty("--dim", v.d.toFixed(3));
+      el.style.setProperty("--xf-dim", v.d.toFixed(3));
+      el.style.setProperty("--xf-z", (flat ? v.z * 0.5 : v.z).toFixed(0));
     }
     root.style.setProperty("--xf-shade", range(p, 0.76, 0.9).toFixed(3));
+    // the establishing shot is seen through the screen's glass; it clears as the camera pushes in
+    root.style.setProperty("--xf-glass", (1 - range(p, 0.04, 0.24)).toFixed(3));
+    // FishyTweaks lights up Task Manager's edge once it's working
+    root.style.setProperty("--xf-spill", (range(p, 0.44, 0.58) * (1 - 0.5 * range(p, 0.86, 1))).toFixed(3));
+    // power mode: the selection slides to Best performance while step 4 runs
+    const pos = easeIO(range(p, STEP0 + STEP_W * 3 + 0.004, STEP0 + STEP_W * 4 - 0.004));
+    root.style.setProperty("--xf-qs-pos", pos.toFixed(3));
+    root.style.setProperty("--xf-qs-by", range(p, STEP0 + STEP_W * 4 - 0.01, STEP0 + STEP_W * 4 + 0.01).toFixed(3));
+    qsSeg.forEach((sp, i) => sp.classList.toggle("on", i === (pos > 0.5 ? 2 : 1)));
     root.style.setProperty("--xf-ft-on", (sample(TRACKS.ft, p).o * 0.08).toFixed(3));
 
     // captions
     const cap = p < 0.2 ? 0 : p < 0.42 ? 1 : p < 0.76 ? 2 : 3;
     if (cap !== lastCap) {
       caps.forEach((el, i) => el.classList.toggle("on", i === cap));
-      dots.forEach((el, i) => el.classList.toggle("on", i === cap));
+      dots.forEach((el, i) => {
+        el.classList.toggle("on", i === cap);
+        el.setAttribute("aria-current", i === cap ? "step" : "false");
+      });
       lastCap = cap;
     }
 
@@ -185,12 +210,18 @@
     drawTrails(p);
   }
 
+  // CPU cells carry a small load bar, like the comparison below
+  const cpuCell = (el, v) => (el.innerHTML = `<i style="--w:${Math.min(100, v * 3)}%"></i>${v}%`);
+  rows.forEach((r) => {
+    const c = r.querySelector(".cpu");
+    cpuCell(c, c.dataset.a != null ? +c.dataset.a : parseInt(c.textContent, 10));
+  });
   function setRow(r, on, cls, label) {
     if (!r || r.classList.contains(cls) === on) return;
     r.classList.toggle(cls, on);
     r.querySelector(".st").textContent = on ? label : "";
     const cpu = r.querySelector(".cpu");
-    cpu.textContent = `${on ? cpu.dataset.b : cpu.dataset.a}%`;
+    cpuCell(cpu, on ? +cpu.dataset.b : +cpu.dataset.a);
     if (on) {
       r.classList.remove("flash");
       void r.offsetWidth;
@@ -281,6 +312,8 @@
     g.stroke();
     const now = Math.round(hist[hist.length - 1]);
     cpuN.textContent = `${now}%`;
+    coreEls.forEach((el, i) => el.style.setProperty("--u", clamp(10 + level * CORE_BASE[i] * 0.95 + (Math.random() - 0.5) * 14 * (0.4 + level), 4, 100).toFixed(0)));
+    root.style.setProperty("--xf-core-c", warm ? "#f59e0b" : "#3b82f6");
     root.style.setProperty("--xf-cpu-c", warm ? "#f59e0b" : "#60a5fa");
     const mem = 10.9 + level * 1.5;
     memN.textContent = `${mem.toFixed(1)} / 16 GB`;
@@ -297,35 +330,120 @@
   sizeGraph();
   root.classList.add("live");
   fit();
-  let target = 0;
-  let shown = 0;
+
+  // ---------- playback: a short film you can also scrub ----------
+  // The section is pinned for a short scroll. The first time its picture is half on screen the film
+  // plays by itself (~15 s). Scrolling inside the pinned part moves the playhead by the same amount
+  // (down = forward, up = rewind) and holds autoplay while you scroll; leaving the bottom finishes
+  // the film. A light smoothing makes wheel notches glide.
+  const DUR = 15000;
+  const BEATS = [0, 0.2, 0.42, 0.76, 1]; // where each caption starts (same as render's caption switch)
+  const btn = $(".xf-play");
+  const track = $(".xf-track");
+  let goal = 0; // where the playhead is heading
+  let shown = 0; // what's on screen (eases toward goal)
+  let playing = false;
+  let autoPaused = false;
+  let started = false;
+  let last = 0;
   let raf = 0;
-  const progress = () => {
+  let scrollHold = 0;
+  const scrollP = () => {
     const r = track.getBoundingClientRect();
     return clamp(-r.top / Math.max(1, r.height - innerHeight));
   };
-  const loop = () => {
-    shown += (target - shown) * (reduce ? 1 : 0.14);
-    if (Math.abs(target - shown) < 0.0004) shown = target;
+  let prevScroll = scrollP();
+  const paint = () => {
     render(shown);
-    raf = shown === target ? 0 : requestAnimationFrame(loop);
+    dots.forEach((d, i) => d.style.setProperty("--fill", range(shown, BEATS[i], BEATS[i + 1]).toFixed(3)));
+    const state = playing ? "playing" : goal >= 1 ? "done" : "paused";
+    if (root.dataset.state !== state) {
+      root.dataset.state = state;
+      btn.setAttribute("aria-label", btn.dataset[playing ? "pause" : goal >= 1 ? "replay" : "play"]);
+    }
   };
-  const onScroll = () => {
-    target = progress();
-    if (!raf) raf = requestAnimationFrame(loop);
+  const loop = (now) => {
+    if (playing && now > scrollHold) goal = Math.min(1, goal + (now - last) / DUR);
+    last = now;
+    if (goal >= 1 && playing) playing = false;
+    shown += (goal - shown) * (reduce ? 1 : 0.16);
+    if (Math.abs(goal - shown) < 0.0003) shown = goal;
+    paint();
+    raf = playing || shown !== goal ? requestAnimationFrame(loop) : 0;
   };
-  addEventListener("scroll", onScroll, { passive: true });
+  const kick = () => {
+    if (!raf) {
+      last = performance.now();
+      raf = requestAnimationFrame(loop);
+    }
+  };
+  const play = () => {
+    if (goal >= 1) goal = shown = 0;
+    playing = true;
+    autoPaused = false;
+    kick();
+    paint();
+  };
+  const pause = (auto) => {
+    if (!playing) return;
+    playing = false;
+    autoPaused = !!auto;
+    paint();
+  };
+  btn.addEventListener("click", () => (playing ? pause() : play()));
+  dots.forEach((d, i) =>
+    d.addEventListener("click", () => {
+      goal = shown = BEATS[i];
+      play();
+    })
+  );
+  addEventListener(
+    "scroll",
+    () => {
+      const sp = scrollP();
+      const d = sp - prevScroll;
+      prevScroll = sp;
+      if (!d) return;
+      goal = sp >= 0.999 ? 1 : clamp(goal + d);
+      scrollHold = performance.now() + 700; // autoplay waits while you scroll
+      kick();
+    },
+    { passive: true }
+  );
   addEventListener("resize", () => {
     fit();
-    onScroll();
+    prevScroll = scrollP();
+    paint();
   });
   small.addEventListener("change", () => {
     fit();
-    render(shown);
+    paint();
   });
-  // a hash link or reload deep in the page starts at the right frame, without a glide
-  target = shown = progress();
-  render(shown);
+  // arriving from a link below (or a reload further down) shows the finished state, not the start
+  if (scrollP() >= 0.999) goal = shown = 1;
+  paint();
+
+  // start when at least half of the picture is on screen; pause off screen or in a background tab
+  const visible = () => {
+    const r = stage.getBoundingClientRect();
+    return r.top < innerHeight * 0.5 && r.bottom > innerHeight * 0.5;
+  };
+  new IntersectionObserver(
+    ([e]) => {
+      const on = e.isIntersecting && e.intersectionRatio >= 0.5;
+      if (on && !document.hidden) {
+        if (!started) {
+          started = true;
+          if (goal < 1) setTimeout(() => visible() && play(), 300);
+        } else if (autoPaused) play();
+      } else if (!on) pause(true);
+    },
+    { threshold: [0, 0.5] }
+  ).observe(stage);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) pause(true);
+    else if (autoPaused && visible()) play();
+  });
 
   // the graph only ticks while the section is on screen and the tab is visible
   let timer = 0;
