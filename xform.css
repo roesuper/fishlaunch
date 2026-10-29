@@ -27,16 +27,11 @@
   margin-inline: auto;
   padding: 96px var(--gutter);
 }
-.xf.live .xf-track {
-  height: 210vh;
-}
 .xf.live .xf-sticky {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  height: 100svh;
+  height: min(100vh, 940px);
+  height: min(100svh, 940px);
   min-height: 600px;
-  padding-block: calc(var(--nav-h) + 8px) 24px;
+  padding-block: 40px;
 }
 
 /* ---------- copy ---------- */

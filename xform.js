@@ -1,7 +1,7 @@
 // The Windows transformation (index only). One progress value p in [0, 1] drives everything:
 // every transform, row state and caption is a pure function of p, so any point can be jumped to and
-// rewinding shows exactly the same frames. p plays by itself like a short film (~9.5 s, again each
-// time it comes back on screen after finishing) and can be scrubbed by scrolling (see playback). The CPU graph and core grid wiggle on their own timer; their level
+// a point can be jumped to. p plays by itself once, like a short film, the first time the scene is
+// seen after the page loads (see playback). The CPU graph and core grid wiggle on their own timer; their level
 // still follows p. With reduced motion it still plays, but flat: no camera tilt, no depth moves.
 (() => {
   const root = document.getElementById("transform");
@@ -326,124 +326,48 @@
   root.classList.add("live");
   fit();
 
-  // ---------- playback: a short film you can also scrub ----------
-  // The section is pinned for a short scroll. The first time its picture is half on screen the film
-  // plays by itself (~15 s). Scrolling inside the pinned part moves the playhead by the same amount
-  // (down = forward, up = rewind) and holds autoplay while you scroll; leaving the bottom finishes
-  // the film. A light smoothing makes wheel notches glide.
+  // ---------- playback: plays once, by itself, the first time it's seen ----------
+  // Starts when its picture is half on screen for the first time after the page loads (or reloads),
+  // runs to the end without stopping (~9.5 s) and stays on the final frame. Scrolling doesn't drive it
+  // and it doesn't replay on its own; a reload shows it again.
   const DUR = 9500;
-  const track = $(".xf-track");
-  let goal = 0; // where the playhead is heading
-  let shown = 0; // what's on screen (eases toward goal)
-  let playing = false;
-  let autoPaused = false;
-  let started = false;
-  let leftAfterEnd = false;
-  let finished = false; // reached the end at least once since the last (re)play
+  let p = 0;
   let last = 0;
-  let raf = 0;
-  let scrollHold = 0;
-  const scrollP = () => {
-    const r = track.getBoundingClientRect();
-    return clamp(-r.top / Math.max(1, r.height - innerHeight));
-  };
-  let prevScroll = scrollP();
-  const paint = () => {
-    render(shown);
-    root.dataset.state = playing ? "playing" : goal >= 1 ? "done" : "paused";
-  };
-  const loop = (now) => {
-    if (playing && now > scrollHold) goal = Math.min(1, goal + (now - last) / DUR);
+  const frame = (now) => {
+    p = Math.min(1, p + (now - last) / DUR);
     last = now;
-    if (goal >= 1) {
-      playing = false;
-      finished = true;
-    }
-    shown += (goal - shown) * (reduce ? 1 : 0.16);
-    if (Math.abs(goal - shown) < 0.0003) shown = goal;
-    paint();
-    raf = playing || shown !== goal ? requestAnimationFrame(loop) : 0;
-    root.classList.toggle("moving", !!raf);
+    render(p);
+    if (p < 1) requestAnimationFrame(frame);
+    else root.classList.remove("moving");
   };
-  const kick = () => {
-    if (!raf) {
-      last = performance.now();
-      raf = requestAnimationFrame(loop);
-    }
+  const start = () => {
+    root.classList.add("moving");
+    last = performance.now();
+    requestAnimationFrame(frame);
   };
-  const play = () => {
-    if (goal >= 1 || finished) goal = shown = 0;
-    finished = false;
-    playing = true;
-    autoPaused = false;
-    kick();
-    paint();
+  // for the QA frame tools (tools/xform-frames.cjs): jump to an exact moment
+  root.xfSeek = (v) => {
+    p = clamp(v);
+    render(p);
   };
-  const pause = (auto) => {
-    if (!playing) return;
-    playing = false;
-    autoPaused = !!auto;
-    paint();
-  };
-  addEventListener(
-    "scroll",
-    () => {
-      const sp = scrollP();
-      const d = sp - prevScroll;
-      prevScroll = sp;
-      if (!d) return;
-      goal = sp >= 0.999 ? 1 : clamp(goal + d);
-      scrollHold = performance.now() + 700; // autoplay waits while you scroll
-      kick();
-    },
-    { passive: true }
-  );
   addEventListener("resize", () => {
     fit();
-    prevScroll = scrollP();
-    paint();
+    render(p);
   });
   small.addEventListener("change", () => {
     fit();
-    paint();
+    render(p);
   });
-  // for the QA frame tools (tools/xform-frames.cjs): jump to an exact moment and hold it
-  root.xfSeek = (v) => {
-    playing = false;
-    started = true;
-    goal = shown = clamp(v);
-    paint();
-  };
-  // arriving from a link below (or a reload further down) shows the finished state, not the start
-  if (scrollP() >= 0.999) goal = shown = 1;
-  paint();
-
-  // start when at least half of the picture is on screen; pause off screen or in a background tab
-  const visible = () => {
-    const r = stage.getBoundingClientRect();
-    return r.top < innerHeight * 0.5 && r.bottom > innerHeight * 0.5;
-  };
-  new IntersectionObserver(
+  render(0);
+  const io = new IntersectionObserver(
     ([e]) => {
-      const on = e.isIntersecting && e.intersectionRatio >= 0.5;
-      if (on && !document.hidden) {
-        if (!started) {
-          started = true;
-          if (goal < 1) setTimeout(() => visible() && play(), 300);
-        } else if (autoPaused) play();
-        else if (leftAfterEnd) setTimeout(() => visible() && play(), 300);
-        leftAfterEnd = false;
-      } else if (!on) {
-        if (finished) leftAfterEnd = true;
-        pause(true);
-      }
+      if (!e.isIntersecting || e.intersectionRatio < 0.5) return;
+      io.disconnect();
+      setTimeout(start, 250);
     },
-    { threshold: [0, 0.5] }
-  ).observe(stage);
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) pause(true);
-    else if (autoPaused && visible()) play();
-  });
+    { threshold: 0.5 }
+  );
+  io.observe(stage);
 
   // the graph only ticks while the section is on screen and the tab is visible
   let timer = 0;
